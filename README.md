@@ -8,7 +8,7 @@ Quickstart
 
 First, install Flask-SimpleLDAP:
     
-        $ pip install flask-simpleldap
+    $ pip install flask-simpleldap
     
 Flask-SimpleLDAP depends, and will install for you, recent versions of Flask
 (0.9 or later) and python-ldap. Flask-SimpleLDAP is compatible
