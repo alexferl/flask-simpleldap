@@ -101,7 +101,7 @@ class LDAP(object):
     @property
     def bind(self):
         """Attempts to bind to the LDAP server using the credentials of the
-            service account.
+        service account.
 
         :return: Bound LDAP connection object if successful or ``None`` if
             unsuccessful.
@@ -117,7 +117,7 @@ class LDAP(object):
 
     def bind_user(self, username, password):
         """Attempts to bind a user to the LDAP server using the credentials
-            supplied.
+        supplied.
 
         :param str username: The username to attempt to bind with.
         :param str password: The password of the username we're attempting to
@@ -174,7 +174,7 @@ class LDAP(object):
 
     def get_user_groups(self, user):
         """Returns a ``list`` with the user's groups or ``None`` if
-            unsuccessful.
+        unsuccessful.
 
         :param str user: User we want groups for.
         """
@@ -195,9 +195,9 @@ class LDAP(object):
 
     def get_group_members(self, group):
         """Returns a ``list`` with the group's members or ``None`` if
-            unsuccessful.
+        unsuccessful.
 
-        :param str group:
+        :param str group: Group we want users for.
         """
 
         conn = self.bind
@@ -223,7 +223,7 @@ class LDAP(object):
     @staticmethod
     def login_required(func):
         """Used to decorate a view function to require LDAP login but does NOT
-            require membership from a specific group.
+        require membership from a specific group.
 
         :param func: The view function to decorate.
         """
@@ -238,7 +238,7 @@ class LDAP(object):
     @staticmethod
     def group_required(groups=None):
         """Used to decorate a view function to require LDAP login AND membership
-            from one of the groups within the groups list.
+        from one of the groups within the groups list.
 
         :param list groups: List of groups that should be able to access the view
             function.
