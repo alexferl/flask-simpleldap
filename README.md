@@ -1,6 +1,8 @@
 Flask-SimpleLDAP
 ================
 
+[![Build Status](https://travis-ci.org/admiralobvious/flask-simpleldap.png?branch=master)](https://travis-ci.org/admiralobvious/flask-simpleldap)
+
 Flask-SimpleLDAP provides LDAP authentication for Flask.
 
 Quickstart
