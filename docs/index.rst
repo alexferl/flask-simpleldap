@@ -37,6 +37,11 @@ required configuration options:
     app.config['LDAP_USERNAME'] = 'CN=user,OU=Users,DC=example,DC=org'
     app.config['LDAP_PASSWORD'] = 'password'
 
+    @app.route('/ldap')
+    @ldap.login_required
+    def ldap_protected():
+        return 'Success!'
+
 
 Configuration
 -------------
