@@ -19,7 +19,7 @@ First, install Flask-SimpleLDAP:
     $ pip install flask-simpleldap
 
 Flask-SimpleLDAP depends, and will install for you, recent versions of Flask
-(0.9 or later) and Python-LDAP. Flask-SimpleLDAP is compatible
+(0.9 or later) and python-ldap. Flask-SimpleLDAP is compatible
 with and tested on Python 2.6 and 2.7.
 
 Next, add a :class:`~flask_simpleldap.LDAP` to your code and at least the three
@@ -33,8 +33,8 @@ required configuration options:
     app = Flask(__name__)
     ldap = LDAP(app)
 
-    app.config['LDAP_BASE_DN'] = 'dc=company,dc=org'
-    app.config['LDAP_USERNAME'] = 'cn=ldap_user,ou=users,dc=company,dc=org'
+    app.config['LDAP_BASE_DN'] = 'OU=users,dc=example,dc=org'
+    app.config['LDAP_USERNAME'] = 'CN=user,OU=Users,DC=example,DC=org'
     app.config['LDAP_PASSWORD'] = 'password'
 
 
