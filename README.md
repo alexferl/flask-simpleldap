@@ -19,21 +19,22 @@ with and tested on Python 2.6 and 2.7.
 Next, add a ``LDAP`` instance to your code and at least the three
 required configuration options:
 
-    from flask import Flask
-    from flask.ext.simpleldap import LDAP
+```python
+from flask import Flask
+from flask.ext.simpleldap import LDAP
 
-    app = Flask(__name__)
-    ldap = LDAP(app)
+app = Flask(__name__)
+ldap = LDAP(app)
 
-    app.config['LDAP_BASE_DN'] = 'OU=users,dc=example,dc=org'
-    app.config['LDAP_USERNAME'] = 'CN=user,OU=Users,DC=example,DC=org'
-    app.config['LDAP_PASSWORD'] = 'password'
+app.config['LDAP_BASE_DN'] = 'OU=users,dc=example,dc=org'
+app.config['LDAP_USERNAME'] = 'CN=user,OU=Users,DC=example,DC=org'
+app.config['LDAP_PASSWORD'] = 'password'
 
-    @app.route('/ldap')
-    @ldap.login_required
-    def ldap_protected():
-        return 'Success!'
-
+@app.route('/ldap')
+@ldap.login_required
+def ldap_protected():
+    return 'Success!'
+```
 
 Check the [examples](examples/) folder for a more complex example using LDAP groups.
 
