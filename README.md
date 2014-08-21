@@ -36,7 +36,13 @@ def ldap_protected():
     return 'Success!'
 ```
 
-Check the [examples](examples/) folder for a more complex example using LDAP groups.
+You can take a look at [examples/groups](examples/groups) for a more complete 
+example using LDAP groups.
+
+You can also take a look at [examples/blueprints](examples/blueprints) for an 
+example using Flask's 
+[application factories](http://flask.pocoo.org/docs/patterns/appfactories/) 
+and [blueprints](http://flask.pocoo.org/docs/blueprints/).
 
 
 Resources
