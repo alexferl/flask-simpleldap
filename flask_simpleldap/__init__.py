@@ -188,7 +188,7 @@ class LDAP(object):
             if records:
                 if current_app.config['LDAP_USER_GROUPS_FIELD'] in records[0][1]:
                     groups = records[0][1][current_app.config['LDAP_USER_GROUPS_FIELD']]
-                    result = [re.findall('cn=(.*?),', group)[0] for group in groups]
+                    result = [re.findall('(?:cn=|CN=)(.*?),', group)[0] for group in groups]
                     return result
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e))
