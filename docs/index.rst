@@ -104,7 +104,7 @@ Changes:
 
 - 0.1.1: September 6, 2014
 
-  - Fix GitHub issue `#3<https://github.com/admiralobvious/flask-simpleldap/issues/3>`_,
+  - Fix GitHub issue `#3 <https://github.com/admiralobvious/flask-simpleldap/issues/3>`_,
     Not compatible with uppercase distinguished names.
 
 - 0.1: August 9, 2014
