@@ -5,7 +5,8 @@ from functools import wraps
 import re
 
 import ldap
-from flask import abort, current_app, g, redirect, url_for
+from flask import abort, current_app, g, redirect, url_for, request
+from flask import make_response
 
 try:
     from flask import _app_ctx_stack as stack
@@ -62,6 +63,7 @@ class LDAP(object):
                               '(&(objectclass=Group)(userPrincipalName={0}))')
         app.config.setdefault('LDAP_GROUP_MEMBERS_FIELD', 'member')
         app.config.setdefault('LDAP_LOGIN_VIEW', 'login')
+        app.config.setdefault('LDAP_REALM_NAME', 'LDAP authentication')
 
         if app.config['LDAP_USE_SSL'] or app.config['LDAP_USE_TLS']:
             ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT,
@@ -266,3 +268,48 @@ class LDAP(object):
                 return func(*args, **kwargs)
             return wrapped
         return wrapper
+
+    def basic_auth_required(self, func):
+        """When applied to a view function, any unauthenticated requests are
+        asked to authenticate via HTTP's standard Basic Authentication system.
+        Requests with credentials are checked with :meth:`.bind_user()`.
+
+        The user's browser will typically show them the contents of
+        LDAP_REALM_NAME as a prompt for which username and password to enter.
+
+        If the request's credentials are accepted by the LDAP server, the
+        username is stored in ``flask.g.ldap_username`` and the password in
+        ``flask.g.ldap_password``.
+
+        :param func: The view function to decorate.
+        """
+        def make_auth_required_response():
+            response = make_response("Authorization required", 401)
+            response.www_authenticate.set_basic(
+                    current_app.config['LDAP_REALM_NAME'])
+            return response
+
+        @wraps(func)
+        def wrapped(*args, **kwargs):
+            if request.authorization is None:
+                req_username = None
+                req_password = None
+            else:
+                req_username = request.authorization.username
+                req_password = request.authorization.password
+
+            if req_username is None or req_password is None:
+                current_app.logger.debug("Got a request without auth data")
+                return make_auth_required_response()
+
+            if not self.bind_user(req_username, req_password):
+                current_app.logger.debug("User {0!r} gave wrong "
+                    "password".format(req_username))
+                return make_auth_required_response()
+
+            g.ldap_username = req_username
+            g.ldap_password = req_password
+
+            return func(*args, **kwargs)
+
+        return wrapped

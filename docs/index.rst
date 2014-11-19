@@ -82,8 +82,14 @@ directives:
                              Default: '(&(objectclass=Group)(userPrincipalName={}))'
 ``LDAP_GROUP_MEMBERS_FIELD`` The field to return when searching for a group's members.
                              Default: 'member'
-``LDAP_LOGIN_VIEW``          The view to redirect to when a user needs to log-in.
-                             Default: 'login'.
+``LDAP_LOGIN_VIEW``          Views decorated with :meth:`.login_required()` or
+                             :meth:`.group_required()` will redirect
+                             unauthenticated requests to this view. Default:
+                             'login'.
+``LDAP_REALM_NAME``          Views decorated with
+                             :meth:`.basic_auth_required()` will use this as
+                             the "realm" part of HTTP Basic Authentication when
+                             responding to unauthenticated requests.
 ============================ ===================================================
 
 
