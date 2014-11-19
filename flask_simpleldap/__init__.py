@@ -222,8 +222,13 @@ class LDAP(object):
 
     @staticmethod
     def login_required(func):
-        """Used to decorate a view function to require LDAP login but does NOT
-        require membership from a specific group.
+        """When applied to a view function, any unauthenticated requests will
+        be redirected to the view named in LDAP_LOGIN_VIEW. Authenticated
+        requests do NOT require membership from a specific group.
+
+        The login view is responsible for asking for credentials, checking
+        them, and setting ``flask.g.user`` to the name of the authenticated
+        user if the credentials are acceptable.
 
         :param func: The view function to decorate.
         """
@@ -237,8 +242,14 @@ class LDAP(object):
 
     @staticmethod
     def group_required(groups=None):
-        """Used to decorate a view function to require LDAP login AND membership
-        from one of the groups within the groups list.
+        """When applied to a view function, any unauthenticated requests will
+        be redirected to the view named in LDAP_LOGIN_VIEW. Authenticated
+        requests are only permitted if they belong to one of the listed groups.
+
+        The login view is responsible for asking for credentials, checking
+        them, and setting ``flask.g.user`` to the name of the authenticated
+        user and ``flask.g.ldap_groups`` to the authenticated's user's groups
+        if the credentials are acceptable.
 
         :param list groups: List of groups that should be able to access the view
             function.
