@@ -113,7 +113,6 @@ Changes:
   - Added HTTP Basic Authentication. Thanks to OptiverTimAll on GitHub.
   - Fix GitHub issue `#4 <https://github.com/admiralobvious/flask-simpleldap/issues/4>`_,
     User or group queries are vulnerable to LDAP injection.
-
     Make sure you update your filters to use '%s' instead of the old '{}'!
 
 - 0.1.1: September 6, 2014
