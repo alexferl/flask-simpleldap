@@ -22,7 +22,7 @@ Flask-SimpleLDAP depends, and will install for you, recent versions of Flask
 (0.9 or later) and python-ldap. Flask-SimpleLDAP is compatible
 with and tested on Python 2.6 and 2.7.
 
-Next, add a :class:`LDAP` to your code and at least the three
+Next, add a :class:`~flask_simpleldap.LDAP` to your code and at least the three
 required configuration options:
 
 .. code-block:: python
@@ -46,7 +46,7 @@ required configuration options:
 Configuration
 -------------
 
-:class:`LDAP` understands the following configuration
+:class:`~flask_simpleldap.LDAP` understands the following configuration
 directives:
 
 ============================ ===================================================
@@ -99,7 +99,7 @@ API
 Classes
 -------
 
-.. autoclass:: LDAP
+.. autoclass:: flask_simpleldap.LDAP
    :members:
 
 
@@ -113,6 +113,7 @@ Changes:
   - Added HTTP Basic Authentication. Thanks to OptiverTimAll on GitHub.
   - Fix GitHub issue `#4 <https://github.com/admiralobvious/flask-simpleldap/issues/4>`_,
     User or group queries are vulnerable to LDAP injection.
+
     Make sure you update your filters to use '%s' instead of the old '{}'!
 
 - 0.1.1: September 6, 2014
