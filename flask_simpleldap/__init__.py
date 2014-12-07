@@ -5,7 +5,7 @@ from functools import wraps
 import re
 
 import ldap
-import ldap.filter
+from ldap import filter
 from flask import abort, current_app, g, make_response, redirect, url_for, \
     request
 
