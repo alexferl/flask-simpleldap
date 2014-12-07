@@ -5,8 +5,9 @@ from functools import wraps
 import re
 
 import ldap
-from flask import abort, current_app, g, redirect, url_for, request
-from flask import make_response
+import ldap.filter
+from flask import abort, current_app, g, make_response, redirect, url_for, \
+    request
 
 try:
     from flask import _app_ctx_stack as stack
@@ -56,11 +57,11 @@ class LDAP(object):
         app.config.setdefault('LDAP_OBJECTS_DN', 'distinguishedName')
         app.config.setdefault('LDAP_USER_FIELDS', [])
         app.config.setdefault('LDAP_USER_OBJECT_FILTER',
-                              '(&(objectclass=Person)(userPrincipalName={0}))')
+                              '(&(objectclass=Person)(userPrincipalName=%s))')
         app.config.setdefault('LDAP_USER_GROUPS_FIELD', 'memberOf')
         app.config.setdefault('LDAP_GROUP_FIELDS', [])
         app.config.setdefault('LDAP_GROUP_OBJECT_FILTER',
-                              '(&(objectclass=Group)(userPrincipalName={0}))')
+                              '(&(objectclass=Group)(userPrincipalName=%s))')
         app.config.setdefault('LDAP_GROUP_MEMBERS_FIELD', 'member')
         app.config.setdefault('LDAP_LOGIN_VIEW', 'login')
         app.config.setdefault('LDAP_REALM_NAME', 'LDAP authentication')
@@ -111,8 +112,9 @@ class LDAP(object):
 
         conn = self.initialize
         try:
-            conn.simple_bind_s(current_app.config['LDAP_USERNAME'],
-                               current_app.config['LDAP_PASSWORD'].encode('utf-8'))
+            conn.simple_bind_s(
+                current_app.config['LDAP_USERNAME'].encode('utf-8'),
+                current_app.config['LDAP_PASSWORD'].encode('utf-8'))
             return conn
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e))
@@ -152,11 +154,13 @@ class LDAP(object):
         if user is not None:
             if not dn_only:
                 fields = current_app.config['LDAP_USER_FIELDS']
-            query = current_app.config['LDAP_USER_OBJECT_FILTER'].format(user)
+            query = ldap.filter.filter_format(
+                current_app.config['LDAP_USER_OBJECT_FILTER'], (user,))
         elif group is not None:
             if not dn_only:
                 fields = current_app.config['LDAP_GROUP_FIELDS']
-            query = current_app.config['LDAP_GROUP_OBJECT_FILTER'].format(group)
+            query = ldap.filter.filter_format(
+                current_app.config['LDAP_GROUP_OBJECT_FILTER'], (group,))
         conn = self.bind
         try:
             records = conn.search_s(current_app.config['LDAP_BASE_DN'],
@@ -166,7 +170,8 @@ class LDAP(object):
             if records:
                 if dn_only:
                     if current_app.config['LDAP_OBJECTS_DN'] in records[0][1]:
-                        dn = records[0][1][current_app.config['LDAP_OBJECTS_DN']]
+                        dn = records[0][1][
+                            current_app.config['LDAP_OBJECTS_DN']]
                         return dn[0]
                 for k, v in records[0][1].items():
                     result[k] = v
@@ -183,14 +188,19 @@ class LDAP(object):
 
         conn = self.bind
         try:
-            records = conn.search_s(current_app.config['LDAP_BASE_DN'], ldap.SCOPE_SUBTREE,
-                                    current_app.config['LDAP_USER_OBJECT_FILTER'].format(user),
-                                    [current_app.config['LDAP_USER_GROUPS_FIELD']])
+            records = conn.search_s(
+                current_app.config['LDAP_BASE_DN'], ldap.SCOPE_SUBTREE,
+                ldap.filter.filter_format(
+                    current_app.config['LDAP_USER_OBJECT_FILTER'], (user,)),
+                [current_app.config['LDAP_USER_GROUPS_FIELD']])
             conn.unbind_s()
             if records:
-                if current_app.config['LDAP_USER_GROUPS_FIELD'] in records[0][1]:
-                    groups = records[0][1][current_app.config['LDAP_USER_GROUPS_FIELD']]
-                    result = [re.findall('(?:cn=|CN=)(.*?),', group)[0] for group in groups]
+                if current_app.config['LDAP_USER_GROUPS_FIELD'] in records[0][
+                    1]:
+                    groups = records[0][1][
+                        current_app.config['LDAP_USER_GROUPS_FIELD']]
+                    result = [re.findall('(?:cn=|CN=)(.*?),', group)[0] for
+                              group in groups]
                     return result
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e))
@@ -204,13 +214,17 @@ class LDAP(object):
 
         conn = self.bind
         try:
-            records = conn.search_s(current_app.config['LDAP_BASE_DN'], ldap.SCOPE_SUBTREE,
-                                    current_app.config['LDAP_GROUP_OBJECT_FILTER'].format(group),
-                                    [current_app.config['LDAP_GROUP_MEMBERS_FIELD']])
+            records = conn.search_s(
+                current_app.config['LDAP_BASE_DN'], ldap.SCOPE_SUBTREE,
+                ldap.filter.filter_format(
+                    current_app.config['LDAP_GROUP_OBJECT_FILTER'], (group,)),
+                [current_app.config['LDAP_GROUP_MEMBERS_FIELD']])
             conn.unbind_s()
             if records:
-                if current_app.config['LDAP_GROUP_MEMBERS_FIELD'] in records[0][1]:
-                    members = records[0][1][current_app.config['LDAP_GROUP_MEMBERS_FIELD']]
+                if current_app.config['LDAP_GROUP_MEMBERS_FIELD'] in \
+                        records[0][1]:
+                    members = records[0][1][
+                        current_app.config['LDAP_GROUP_MEMBERS_FIELD']]
                     return members
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e))
@@ -240,6 +254,7 @@ class LDAP(object):
             if g.user is None:
                 return redirect(url_for(current_app.config['LDAP_LOGIN_VIEW']))
             return func(*args, **kwargs)
+
         return wrapped
 
     @staticmethod
@@ -253,20 +268,25 @@ class LDAP(object):
         user and ``flask.g.ldap_groups`` to the authenticated's user's groups
         if the credentials are acceptable.
 
-        :param list groups: List of groups that should be able to access the view
-            function.
+        :param list groups: List of groups that should be able to access the
+            view function.
         """
 
         def wrapper(func):
             @wraps(func)
             def wrapped(*args, **kwargs):
                 if g.user is None:
-                    return redirect(url_for(current_app.config['LDAP_LOGIN_VIEW']))
+                    return redirect(
+                        url_for(current_app.config['LDAP_LOGIN_VIEW']))
+
                 match = [group for group in groups if group in g.ldap_groups]
                 if not match:
                     abort(401)
+
                 return func(*args, **kwargs)
+
             return wrapped
+
         return wrapper
 
     def basic_auth_required(self, func):
@@ -283,10 +303,11 @@ class LDAP(object):
 
         :param func: The view function to decorate.
         """
+
         def make_auth_required_response():
-            response = make_response("Authorization required", 401)
+            response = make_response('Unauthorized', 401)
             response.www_authenticate.set_basic(
-                    current_app.config['LDAP_REALM_NAME'])
+                current_app.config['LDAP_REALM_NAME'])
             return response
 
         @wraps(func)
@@ -299,12 +320,12 @@ class LDAP(object):
                 req_password = request.authorization.password
 
             if req_username is None or req_password is None:
-                current_app.logger.debug("Got a request without auth data")
+                current_app.logger.debug('Got a request without auth data')
                 return make_auth_required_response()
 
             if not self.bind_user(req_username, req_password):
-                current_app.logger.debug("User {0!r} gave wrong "
-                    "password".format(req_username))
+                current_app.logger.debug('User {0!r} gave wrong '
+                                         'password'.format(req_username))
                 return make_auth_required_response()
 
             g.ldap_username = req_username

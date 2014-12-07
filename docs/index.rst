@@ -73,13 +73,13 @@ directives:
 ``LDAP_USER_FIELDS``         ``list`` of fields to return when searching for a user's
                              object details. Default: ``list`` (all).
 ``LDAP_USER_OBJECT_FILTER``  The filter to use when searching for a user object.
-                             Default: '(&(objectclass=Person)(userPrincipalName={}))'
+                             Default: '(&(objectclass=Person)(userPrincipalName=%s))'
 ``LDAP_USER_GROUPS_FIELD``   The field to return when searching for a user's
                              groups. Default: 'memberOf'.
 ``LDAP_GROUP_FIELDS``        ``list`` of fields to return when searching for a group's
                              object details. Default: ``list`` (all).
 ``LDAP_GROUP_OBJECT_FILTER`` The filter to use when searching for a group object.
-                             Default: '(&(objectclass=Group)(userPrincipalName={}))'
+                             Default: '(&(objectclass=Group)(userPrincipalName=%s))'
 ``LDAP_GROUP_MEMBERS_FIELD`` The field to return when searching for a group's members.
                              Default: 'member'
 ``LDAP_LOGIN_VIEW``          Views decorated with :meth:`.login_required()` or
@@ -107,6 +107,13 @@ History
 -------
 
 Changes:
+
+- 0.2.0: December 7, 2014
+
+  - Added HTTP Basic Authentication. Thanks to OptiverTimAll on GitHub.
+  - Fix GitHub issue `#4 <https://github.com/admiralobvious/flask-simpleldap/issues/4>`_,
+    User or group queries are vulnerable to LDAP injection.
+    Make sure you update your filters to use '%s' instead of the old '{}'!
 
 - 0.1.1: September 6, 2014
 
