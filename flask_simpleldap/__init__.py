@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 __all__ = ['LDAP']
 
-from functools import wraps
 import re
-
 import ldap
-from ldap import filter
-from flask import abort, current_app, g, make_response, redirect, url_for, \
-    request
+import ldap.filter
+from functools import wraps
+from flask import abort, current_app, g, make_response, redirect, url_for, request
 
 try:
     from flask import _app_ctx_stack as stack
@@ -252,7 +250,7 @@ class LDAP(object):
         @wraps(func)
         def wrapped(*args, **kwargs):
             if g.user is None:
-                return redirect(url_for(current_app.config['LDAP_LOGIN_VIEW']))
+                return redirect(url_for(current_app.config['LDAP_LOGIN_VIEW'], next=request.path))
             return func(*args, **kwargs)
 
         return wrapped
@@ -277,7 +275,7 @@ class LDAP(object):
             def wrapped(*args, **kwargs):
                 if g.user is None:
                     return redirect(
-                        url_for(current_app.config['LDAP_LOGIN_VIEW']))
+                        url_for(current_app.config['LDAP_LOGIN_VIEW'], next=request.path))
 
                 match = [group for group in groups if group in g.ldap_groups]
                 if not match:
