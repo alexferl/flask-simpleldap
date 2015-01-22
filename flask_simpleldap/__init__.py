@@ -121,6 +121,15 @@ class LDAP(object):
         """Attempts to bind a user to the LDAP server using the credentials
         supplied.
 
+        .. note::
+
+            Many LDAP servers will grant anonymous access if ``password`` is
+            the empty string, causing this method to return :obj:`True` no
+            matter what username is given. If you want to use this method to
+            validate a username and password, rather than actually connecting
+            to the LDAP server as a particular user, make sure ``password`` is
+            not empty.
+
         :param str username: The username to attempt to bind with.
         :param str password: The password of the username we're attempting to
             bind with.
@@ -317,7 +326,11 @@ class LDAP(object):
                 req_username = request.authorization.username
                 req_password = request.authorization.password
 
-            if req_username is None or req_password is None:
+            # Many LDAP servers will grant you anonymous access if you log in
+            # with an empty password, even if you supply a non-anonymous user
+            # ID, causing .bind_user() to return True. Therefore, only accept
+            # non-empty passwords.
+            if req_username in ['', None] or req_password in ['', None]:
                 current_app.logger.debug('Got a request without auth data')
                 return make_auth_required_response()
 
