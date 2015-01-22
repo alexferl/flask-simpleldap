@@ -108,6 +108,11 @@ History
 
 Changes:
 
+- 0.2.1: January 6, 2015
+
+  - Fix Github issue `#10 <https://github.com/admiralobvious/flask-simpleldap/issues/10>`_,
+    Redirect users back to the page they originally requested after authenticating
+
 - 0.2.0: December 7, 2014
 
   - Added HTTP Basic Authentication. Thanks to OptiverTimAll on GitHub.
