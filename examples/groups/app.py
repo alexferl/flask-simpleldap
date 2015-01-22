@@ -36,7 +36,7 @@ def login():
         user = request.form['user']
         passwd = request.form['passwd']
         test = ldap.bind_user(user, passwd)
-        if test is None or passwd = '':
+        if test is None or passwd == '':
             return 'Invalid credentials'
         else:
             session['user_id'] = request.form['user']

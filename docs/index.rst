@@ -108,10 +108,13 @@ History
 
 Changes:
 
-- 0.2.1: January 6, 2015
+- 0.3.0: January 21, 2015
 
   - Fix Github issue `#10 <https://github.com/admiralobvious/flask-simpleldap/issues/10>`_,
     Redirect users back to the page they originally requested after authenticating
+
+  - Fix GitHub issue `#12 <https://github.com/admiralobvious/flask-simpleldap/issues/12>`_,
+    Only trust .bind_user() with a non-empty password
 
 - 0.2.0: December 7, 2014
 

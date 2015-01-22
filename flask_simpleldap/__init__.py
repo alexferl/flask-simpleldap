@@ -2,10 +2,12 @@
 __all__ = ['LDAP']
 
 import re
+from functools import wraps
+
 import ldap
 import ldap.filter
-from functools import wraps
-from flask import abort, current_app, g, make_response, redirect, url_for, request
+from flask import abort, current_app, g, make_response, redirect, url_for, \
+    request
 
 try:
     from flask import _app_ctx_stack as stack
@@ -202,8 +204,8 @@ class LDAP(object):
                 [current_app.config['LDAP_USER_GROUPS_FIELD']])
             conn.unbind_s()
             if records:
-                if current_app.config['LDAP_USER_GROUPS_FIELD'] in records[0][
-                    1]:
+                if current_app.config['LDAP_USER_GROUPS_FIELD'] in \
+                        records[0][1]:
                     groups = records[0][1][
                         current_app.config['LDAP_USER_GROUPS_FIELD']]
                     result = [re.findall('(?:cn=|CN=)(.*?),', group)[0] for
@@ -259,7 +261,8 @@ class LDAP(object):
         @wraps(func)
         def wrapped(*args, **kwargs):
             if g.user is None:
-                return redirect(url_for(current_app.config['LDAP_LOGIN_VIEW'], next=request.path))
+                return redirect(url_for(current_app.config['LDAP_LOGIN_VIEW'],
+                                        next=request.path))
             return func(*args, **kwargs)
 
         return wrapped
@@ -272,7 +275,7 @@ class LDAP(object):
 
         The login view is responsible for asking for credentials, checking
         them, and setting ``flask.g.user`` to the name of the authenticated
-        user and ``flask.g.ldap_groups`` to the authenticated's user's groups
+        user and ``flask.g.ldap_groups`` to the authenticated user's groups
         if the credentials are acceptable.
 
         :param list groups: List of groups that should be able to access the
@@ -284,7 +287,8 @@ class LDAP(object):
             def wrapped(*args, **kwargs):
                 if g.user is None:
                     return redirect(
-                        url_for(current_app.config['LDAP_LOGIN_VIEW'], next=request.path))
+                        url_for(current_app.config['LDAP_LOGIN_VIEW'],
+                                next=request.path))
 
                 match = [group for group in groups if group in g.ldap_groups]
                 if not match:
