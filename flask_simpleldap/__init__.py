@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-__all__ = ['LDAP']
-
 import re
 from functools import wraps
-
 import ldap
 import ldap.filter
 from flask import abort, current_app, g, make_response, redirect, url_for, \
     request
+
+__all__ = ['LDAP']
 
 try:
     from flask import _app_ctx_stack as stack
@@ -187,7 +186,8 @@ class LDAP(object):
                         if records:
                             return records[0][0]
                     else:
-                        if current_app.config['LDAP_OBJECTS_DN'] in records[0][1]:
+                        if current_app.config['LDAP_OBJECTS_DN'] \
+                                in records[0][1]:
                             dn = records[0][1][
                                 current_app.config['LDAP_OBJECTS_DN']]
                             return dn[0]
@@ -207,23 +207,28 @@ class LDAP(object):
         conn = self.bind
         try:
             if current_app.config['LDAP_OPENLDAP']:
-                fields = [str(current_app.config['LDAP_GROUP_MEMBER_FILTER_FIELD'])]
+                fields = \
+                    [str(current_app.config['LDAP_GROUP_MEMBER_FILTER_FIELD'])]
                 records = conn.search_s(
                     current_app.config['LDAP_BASE_DN'], ldap.SCOPE_SUBTREE,
-                    ldap.filter.filter_format(current_app.config['LDAP_GROUP_MEMBER_FILTER'],
-                                              (self.get_object_details(user, dn_only=True),)),
+                    ldap.filter.filter_format(
+                        current_app.config['LDAP_GROUP_MEMBER_FILTER'],
+                        (self.get_object_details(user, dn_only=True),)),
                     fields)
             else:
                 records = conn.search_s(
                     current_app.config['LDAP_BASE_DN'], ldap.SCOPE_SUBTREE,
                     ldap.filter.filter_format(
-                        current_app.config['LDAP_USER_OBJECT_FILTER'], (user,)),
+                        current_app.config['LDAP_USER_OBJECT_FILTER'],
+                        (user,)),
                     [current_app.config['LDAP_USER_GROUPS_FIELD']])
 
             conn.unbind_s()
             if records:
                 if current_app.config['LDAP_OPENLDAP']:
-                    groups = [record[1][current_app.config['LDAP_GROUP_MEMBER_FILTER_FIELD']][0] for
+                    group_member_filter = \
+                        current_app.config['LDAP_GROUP_MEMBER_FILTER_FIELD']
+                    groups = [record[1][group_member_filter][0] for
                               record in records]
                     return groups
                 else:
