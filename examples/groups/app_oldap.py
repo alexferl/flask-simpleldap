@@ -5,10 +5,20 @@ app = Flask(__name__)
 app.secret_key = 'dev key'
 app.debug = True
 
-app.config['LDAP_HOST'] = 'ldap.example.org'
-app.config['LDAP_BASE_DN'] = 'OU=users,dc=example,dc=org'
-app.config['LDAP_USERNAME'] = 'CN=user,OU=Users,DC=example,DC=org'
+app.config['LDAP_OPENLDAP'] = True
+app.config['LDAP_OBJECTS_DN'] = 'dn'
+app.config['LDAP_REALM_NAME'] = 'OpenLDAP Authentication'
+app.config['LDAP_HOST'] = 'openldap.example.org'
+app.config['LDAP_BASE_DN'] = 'dc=users,dc=openldap,dc=org'
+app.config['LDAP_USERNAME'] = 'cn=user,ou=servauth-users,dc=users,dc=openldap,dc=org'
 app.config['LDAP_PASSWORD'] = 'password'
+app.config['LDAP_USER_OBJECT_FILTER'] = '(&(objectclass=inetOrgPerson)(uid=%s))'
+
+# Group configuration
+app.config['LDAP_GROUP_MEMBERS_FIELD'] = "uniquemember"
+app.config['LDAP_GROUP_OBJECT_FILTER'] = "(&(objectclass=groupOfUniqueNames)(uniquemember=%s))"
+app.config['LDAP_GROUP_MEMBER_FILTER'] = "(&(cn=*)(objectclass=groupOfUniqueNames)(uniquemember=%s))"
+app.config['LDAP_GROUP_MEMBER_FILTER_FIELD'] = "cn"
 
 ldap = LDAP(app)
 
@@ -49,7 +59,7 @@ def login():
 
 
 @app.route('/group')
-@ldap.group_required(groups=['Web Developers', 'QA'])
+@ldap.group_required(groups=['web-developers'])
 def group():
     return 'Group restricted page'
 

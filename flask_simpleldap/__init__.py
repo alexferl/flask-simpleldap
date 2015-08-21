@@ -65,6 +65,9 @@ class LDAP(object):
         app.config.setdefault('LDAP_GROUP_MEMBERS_FIELD', 'member')
         app.config.setdefault('LDAP_LOGIN_VIEW', 'login')
         app.config.setdefault('LDAP_REALM_NAME', 'LDAP authentication')
+        app.config.setdefault('LDAP_OPENLDAP', False)
+        app.config.setdefault('LDAP_GROUP_MEMBER_FILTER', '*')
+        app.config.setdefault('LDAP_GROUP_MEMBER_FILTER_FIELD', '*')
 
         if app.config['LDAP_USE_SSL'] or app.config['LDAP_USE_TLS']:
             ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT,
@@ -140,6 +143,7 @@ class LDAP(object):
         """
 
         user_dn = self.get_object_details(user=username, dn_only=True)
+        print user_dn
         if user_dn is None:
             return
         try:
@@ -174,14 +178,19 @@ class LDAP(object):
         try:
             records = conn.search_s(current_app.config['LDAP_BASE_DN'],
                                     ldap.SCOPE_SUBTREE, query, fields)
+
             conn.unbind_s()
             result = {}
             if records:
                 if dn_only:
-                    if current_app.config['LDAP_OBJECTS_DN'] in records[0][1]:
-                        dn = records[0][1][
-                            current_app.config['LDAP_OBJECTS_DN']]
-                        return dn[0]
+                    if current_app.config['LDAP_OPENLDAP']:
+                        if records:
+                            return records[0][0]
+                    else:
+                        if current_app.config['LDAP_OBJECTS_DN'] in records[0][1]:
+                            dn = records[0][1][
+                                current_app.config['LDAP_OBJECTS_DN']]
+                            return dn[0]
                 for k, v in records[0][1].items():
                     result[k] = v
                 return result
@@ -197,20 +206,34 @@ class LDAP(object):
 
         conn = self.bind
         try:
-            records = conn.search_s(
-                current_app.config['LDAP_BASE_DN'], ldap.SCOPE_SUBTREE,
-                ldap.filter.filter_format(
-                    current_app.config['LDAP_USER_OBJECT_FILTER'], (user,)),
-                [current_app.config['LDAP_USER_GROUPS_FIELD']])
+            if current_app.config['LDAP_OPENLDAP']:
+                fields = [str(current_app.config['LDAP_GROUP_MEMBER_FILTER_FIELD'])]
+                records = conn.search_s(
+                    current_app.config['LDAP_BASE_DN'], ldap.SCOPE_SUBTREE,
+                    ldap.filter.filter_format(current_app.config['LDAP_GROUP_MEMBER_FILTER'],
+                                              (self.get_object_details(user, dn_only=True),)),
+                    fields)
+            else:
+                records = conn.search_s(
+                    current_app.config['LDAP_BASE_DN'], ldap.SCOPE_SUBTREE,
+                    ldap.filter.filter_format(
+                        current_app.config['LDAP_USER_OBJECT_FILTER'], (user,)),
+                    [current_app.config['LDAP_USER_GROUPS_FIELD']])
+
             conn.unbind_s()
             if records:
-                if current_app.config['LDAP_USER_GROUPS_FIELD'] in \
-                        records[0][1]:
-                    groups = records[0][1][
-                        current_app.config['LDAP_USER_GROUPS_FIELD']]
-                    result = [re.findall('(?:cn=|CN=)(.*?),', group)[0] for
-                              group in groups]
-                    return result
+                if current_app.config['LDAP_OPENLDAP']:
+                    groups = [record[1][current_app.config['LDAP_GROUP_MEMBER_FILTER_FIELD']][0] for
+                              record in records]
+                    return groups
+                else:
+                    if current_app.config['LDAP_USER_GROUPS_FIELD'] in \
+                            records[0][1]:
+                        groups = records[0][1][
+                            current_app.config['LDAP_USER_GROUPS_FIELD']]
+                        result = [re.findall('(?:cn=|CN=)(.*?),', group)[0] for
+                                  group in groups]
+                        return result
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e))
 
@@ -289,7 +312,6 @@ class LDAP(object):
                     return redirect(
                         url_for(current_app.config['LDAP_LOGIN_VIEW'],
                                 next=request.path))
-
                 match = [group for group in groups if group in g.ldap_groups]
                 if not match:
                     abort(401)
