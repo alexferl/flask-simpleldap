@@ -142,7 +142,7 @@ class LDAP(object):
         """
 
         user_dn = self.get_object_details(user=username, dn_only=True)
-        print user_dn
+
         if user_dn is None:
             return
         try:
