@@ -45,6 +45,45 @@ example using Flask's
 and [blueprints](http://flask.pocoo.org/docs/blueprints/).
 
 
+OpenLDAP
+----------
+
+Add the ``LDAP`` instance to your code and depending on your OpenLDAP
+configuration, add the following at least LDAP_USER_OBJECT_FILTER and 
+LDAP_USER_OBJECT_FILTER.
+
+```python
+from flask import Flask
+from flask.ext.simpleldap import LDAP
+
+app = Flask(__name__)
+ldap = LDAP(app)
+
+# Base
+app.config['LDAP_REALM_NAME'] = 'OpenLDAP Authentication'
+app.config['LDAP_HOST'] = 'openldap.example.org'
+app.config['LDAP_BASE_DN'] = 'dc=users,dc=openldap,dc=org'
+app.config['LDAP_USERNAME'] = 'cn=user,ou=servauth-users,dc=users,dc=openldap,dc=org'
+app.config['LDAP_PASSWORD'] = 'password'
+
+# OpenLDAP 
+app.config['LDAP_OBJECTS_DN'] = 'dn'
+app.config['LDAP_OPENLDAP'] = True
+app.config['LDAP_USER_OBJECT_FILTER'] = '(&(objectclass=inetOrgPerson)(uid=%s))'
+
+# Groups
+app.config['LDAP_GROUP_MEMBERS_FIELD'] = "uniquemember"
+app.config['LDAP_GROUP_OBJECT_FILTER'] = "(&(objectclass=groupOfUniqueNames)(uniquemember=%s))"
+app.config['LDAP_GROUP_MEMBER_FILTER'] = "(&(cn=*)(objectclass=groupOfUniqueNames)(uniquemember=%s))"
+app.config['LDAP_GROUP_MEMBER_FILTER_FIELD'] = "cn"
+
+@app.route('/ldap')
+@ldap.login_required
+def ldap_protected():
+    return 'Success!'
+```
+
+
 Resources
 ---------
 
