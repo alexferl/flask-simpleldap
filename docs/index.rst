@@ -49,7 +49,7 @@ Configuration
 :class:`~flask_simpleldap.LDAP` understands the following configuration
 directives:
 
-================================== ===================================================
+================================== ================================================================
 ``LDAP_HOST``                      The host name or IP address of your LDAP server.
                                    Default: 'localhost'.
 ``LDAP_PORT``                      The port number of your LDAP server. Default: 389.
@@ -96,7 +96,7 @@ directives:
                                    Default: '*'
 ``LDAP_GROUP_MEMBER_FILTER_FIELD`` The group member filter field to use when using OpenLDAP.
                                    Default: '*'
-================================== ===================================================
+================================== ================================================================
 
 
 API
