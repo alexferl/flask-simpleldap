@@ -114,6 +114,10 @@ History
 
 Changes:
 
+- 1.0.1 June 5, 2016
+
+  - Fix ldap filter import.
+
 - 1.0.0 June 4, 2016
 
   - Python 3.x support. Switched from python-ldap to pyldap which is a fork with Python 3.x support.

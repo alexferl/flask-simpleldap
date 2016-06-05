@@ -2,7 +2,7 @@
 import re
 from functools import wraps
 import ldap
-from ldap import filter
+from ldap import filter as ldap_filter
 from flask import abort, current_app, g, make_response, redirect, url_for, \
     request
 
@@ -93,7 +93,7 @@ class LDAP(object):
                 conn.start_tls_s()
             return conn
         except ldap.LDAPError as e:
-            raise LDAPException(self.error(e))
+            raise LDAPException(self.error(e.args))
 
     @property
     def bind(self):
@@ -111,7 +111,7 @@ class LDAP(object):
                 current_app.config['LDAP_PASSWORD'])
             return conn
         except ldap.LDAPError as e:
-            raise LDAPException(self.error(e))
+            raise LDAPException(self.error(e.args))
 
     def bind_user(self, username, password):
         """Attempts to bind a user to the LDAP server using the credentials
@@ -158,12 +158,12 @@ class LDAP(object):
         if user is not None:
             if not dn_only:
                 fields = current_app.config['LDAP_USER_FIELDS']
-            query = filter.filter_format(
+            query = ldap_filter.filter_format(
                 current_app.config['LDAP_USER_OBJECT_FILTER'], (user,))
         elif group is not None:
             if not dn_only:
                 fields = current_app.config['LDAP_GROUP_FIELDS']
-            query = filter.filter_format(
+            query = ldap_filter.filter_format(
                 current_app.config['LDAP_GROUP_OBJECT_FILTER'], (group,))
         conn = self.bind
         try:
@@ -187,7 +187,7 @@ class LDAP(object):
                     result[k] = v
                 return result
         except ldap.LDAPError as e:
-            raise LDAPException(self.error(e))
+            raise LDAPException(self.error(e.args))
 
     def get_user_groups(self, user):
         """Returns a ``list`` with the user's groups or ``None`` if
@@ -203,14 +203,14 @@ class LDAP(object):
                     [str(current_app.config['LDAP_GROUP_MEMBER_FILTER_FIELD'])]
                 records = conn.search_s(
                     current_app.config['LDAP_BASE_DN'], ldap.SCOPE_SUBTREE,
-                    ldap.filter.filter_format(
+                    ldap_filter.filter_format(
                         current_app.config['LDAP_GROUP_MEMBER_FILTER'],
                         (self.get_object_details(user, dn_only=True),)),
                     fields)
             else:
                 records = conn.search_s(
                     current_app.config['LDAP_BASE_DN'], ldap.SCOPE_SUBTREE,
-                    ldap.filter.filter_format(
+                    ldap_filter.filter_format(
                         current_app.config['LDAP_USER_OBJECT_FILTER'],
                         (user,)),
                     [current_app.config['LDAP_USER_GROUPS_FIELD']])
@@ -228,11 +228,11 @@ class LDAP(object):
                             records[0][1]:
                         groups = records[0][1][
                             current_app.config['LDAP_USER_GROUPS_FIELD']]
-                        result = [re.findall(b'(?:cn=|CN=)(.*?),', group)[0] for
-                                  group in groups]
+                        result = [re.findall(b'(?:cn=|CN=)(.*?),', group)[0]
+                                  for group in groups]
                         return result
         except ldap.LDAPError as e:
-            raise LDAPException(self.error(e))
+            raise LDAPException(self.error(e.args))
 
     def get_group_members(self, group):
         """Returns a ``list`` with the group's members or ``None`` if
@@ -245,7 +245,7 @@ class LDAP(object):
         try:
             records = conn.search_s(
                 current_app.config['LDAP_BASE_DN'], ldap.SCOPE_SUBTREE,
-                ldap.filter.filter_format(
+                ldap_filter.filter_format(
                     current_app.config['LDAP_GROUP_OBJECT_FILTER'], (group,)),
                 [current_app.config['LDAP_GROUP_MEMBERS_FIELD']])
             conn.unbind_s()
@@ -256,15 +256,15 @@ class LDAP(object):
                         current_app.config['LDAP_GROUP_MEMBERS_FIELD']]
                     return members
         except ldap.LDAPError as e:
-            raise LDAPException(self.error(e))
+            raise LDAPException(self.error(e.args))
 
     @staticmethod
     def error(e):
-        e = e.args[0]
+        e = e[0]
         if 'desc' in e:
             return e['desc']
         else:
-            return e[0]
+            return e
 
     @staticmethod
     def login_required(func):
