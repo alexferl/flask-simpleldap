@@ -2,7 +2,7 @@
 import re
 from functools import wraps
 import ldap
-import ldap.filter
+from ldap import filter
 from flask import abort, current_app, g, make_response, redirect, url_for, \
     request
 
@@ -158,12 +158,12 @@ class LDAP(object):
         if user is not None:
             if not dn_only:
                 fields = current_app.config['LDAP_USER_FIELDS']
-            query = ldap.filter.filter_format(
+            query = filter.filter_format(
                 current_app.config['LDAP_USER_OBJECT_FILTER'], (user,))
         elif group is not None:
             if not dn_only:
                 fields = current_app.config['LDAP_GROUP_FIELDS']
-            query = ldap.filter.filter_format(
+            query = filter.filter_format(
                 current_app.config['LDAP_GROUP_OBJECT_FILTER'], (group,))
         conn = self.bind
         try:
