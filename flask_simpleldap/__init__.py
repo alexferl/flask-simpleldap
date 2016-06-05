@@ -8,11 +8,6 @@ from flask import abort, current_app, g, make_response, redirect, url_for, \
 
 __all__ = ['LDAP']
 
-try:
-    from flask import _app_ctx_stack as stack
-except ImportError:
-    from flask import _request_ctx_stack as stack
-
 
 class LDAPException(RuntimeError):
     message = None

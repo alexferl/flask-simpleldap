@@ -21,7 +21,7 @@ setup(
     include_package_data=True,
     platforms='any',
     install_requires=[
-        'Flask>=0.10',
+        'Flask>=0.10.1',
         'pyldap'
     ],
     classifiers=[
