@@ -19,8 +19,8 @@ First, install Flask-SimpleLDAP:
     $ pip install flask-simpleldap
 
 Flask-SimpleLDAP depends, and will install for you, recent versions of Flask
-(0.9 or later) and python-ldap. Flask-SimpleLDAP is compatible
-with and tested on Python 2.6 and 2.7.
+(0.9 or later) and pyldap. Flask-SimpleLDAP is compatible
+with and tested on Python 2.7, 3.4 and 3.5.
 
 Next, add a :class:`~flask_simpleldap.LDAP` to your code and at least the three
 required configuration options:
@@ -28,7 +28,7 @@ required configuration options:
 .. code-block:: python
 
     from flask import Flask
-    from flask.ext.simpleldap import LDAP
+    from flask_simpleldap import LDAP
 
     app = Flask(__name__)
     ldap = LDAP(app)
@@ -113,6 +113,10 @@ History
 -------
 
 Changes:
+
+- 1.0.0 June 4, 2016
+
+  - Python 3.x support. Switched from python-ldap to pyldap which is a fork with Python 3.x support.
 
 - 0.4.0: September 5, 2015
 

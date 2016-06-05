@@ -1,5 +1,5 @@
 from flask import Flask, g, request, session, redirect, url_for
-from flask.ext.simpleldap import LDAP
+from flask_simpleldap import LDAP
 
 app = Flask(__name__)
 app.secret_key = 'dev key'

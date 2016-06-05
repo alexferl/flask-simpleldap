@@ -23,9 +23,6 @@ class LDAPException(RuntimeError):
     def __str__(self):
         return self.message
 
-    def __unicode__(self):
-        return self.message
-
 
 class LDAP(object):
     def __init__(self, app=None):
@@ -115,8 +112,8 @@ class LDAP(object):
         conn = self.initialize
         try:
             conn.simple_bind_s(
-                current_app.config['LDAP_USERNAME'].encode('utf-8'),
-                current_app.config['LDAP_PASSWORD'].encode('utf-8'))
+                current_app.config['LDAP_USERNAME'],
+                current_app.config['LDAP_PASSWORD'])
             return conn
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e))
@@ -147,7 +144,7 @@ class LDAP(object):
             return
         try:
             conn = self.initialize
-            conn.simple_bind_s(user_dn, password)
+            conn.simple_bind_s(user_dn.decode('utf-8'), password)
             return True
         except ldap.LDAPError:
             return
@@ -191,7 +188,7 @@ class LDAP(object):
                             dn = records[0][1][
                                 current_app.config['LDAP_OBJECTS_DN']]
                             return dn[0]
-                for k, v in records[0][1].items():
+                for k, v in list(records[0][1].items()):
                     result[k] = v
                 return result
         except ldap.LDAPError as e:
@@ -236,7 +233,7 @@ class LDAP(object):
                             records[0][1]:
                         groups = records[0][1][
                             current_app.config['LDAP_USER_GROUPS_FIELD']]
-                        result = [re.findall('(?:cn=|CN=)(.*?),', group)[0] for
+                        result = [re.findall(b'(?:cn=|CN=)(.*?),', group)[0] for
                                   group in groups]
                         return result
         except ldap.LDAPError as e:
@@ -268,10 +265,11 @@ class LDAP(object):
 
     @staticmethod
     def error(e):
-        if 'desc' in dict(e.message):
-            return dict(e.message)['desc']
+        e = e.args[0]
+        if 'desc' in e:
+            return e['desc']
         else:
-            return e[1]
+            return e[0]
 
     @staticmethod
     def login_required(func):

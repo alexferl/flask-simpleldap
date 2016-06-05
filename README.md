@@ -13,15 +13,15 @@ First, install Flask-SimpleLDAP:
     $ pip install flask-simpleldap
     
 Flask-SimpleLDAP depends, and will install for you, recent versions of Flask
-(0.9 or later) and python-ldap. Flask-SimpleLDAP is compatible
-with and tested on Python 2.6 and 2.7.
+(0.9 or later) and [pyldap](https://github.com/pyldap/pyldap). Flask-SimpleLDAP is compatible
+with and tested on Python 2.7, 3.4 and 3.5.
 
 Next, add a ``LDAP`` instance to your code and at least the three
 required configuration options:
 
 ```python
 from flask import Flask
-from flask.ext.simpleldap import LDAP
+from flask_simpleldap import LDAP
 
 app = Flask(__name__)
 ldap = LDAP(app)
@@ -46,7 +46,7 @@ and [blueprints](http://flask.pocoo.org/docs/blueprints/).
 
 
 OpenLDAP
-----------
+--------
 
 Add the ``LDAP`` instance to your code and depending on your OpenLDAP
 configuration, add the following at least LDAP_USER_OBJECT_FILTER and 
@@ -54,7 +54,7 @@ LDAP_USER_OBJECT_FILTER.
 
 ```python
 from flask import Flask
-from flask.ext.simpleldap import LDAP
+from flask_simpleldap import LDAP
 
 app = Flask(__name__)
 ldap = LDAP(app)
@@ -82,6 +82,14 @@ app.config['LDAP_GROUP_MEMBER_FILTER_FIELD'] = "cn"
 def ldap_protected():
     return 'Success!'
 ```
+
+
+Migrating from 0.x to 1.x
+-------------------------
+
+The only major change from 0.x releases and 1.x is the underlying LDAP library changed from python-ldap to
+[pyldap](https://github.com/pyldap/pyldap) which is fork that adds Python 3.x support. Everything else SHOULD
+be the same, but don't hesitate to open an issue if encounter some problem upgrading from 0.x to 1.x.
 
 
 Resources

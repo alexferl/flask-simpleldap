@@ -1,2 +1,2 @@
-from flask.ext.simpleldap import LDAP
+from flask_simpleldap import LDAP
 ldap = LDAP()
