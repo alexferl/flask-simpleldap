@@ -88,8 +88,8 @@ Migrating from 0.x to 1.x
 -------------------------
 
 The only major change from 0.x releases and 1.x is the underlying LDAP library changed from python-ldap to
-[pyldap](https://github.com/pyldap/pyldap) which is fork that adds Python 3.x support. Everything else SHOULD
-be the same, but don't hesitate to open an issue if encounter some problem upgrading from 0.x to 1.x.
+[pyldap](https://github.com/pyldap/pyldap) which is fork that adds Python 3.x support. Everything else **SHOULD**
+be the same, but don't hesitate to open an issue if you encounter some problem upgrading from 0.x to 1.x.
 
 
 Resources
