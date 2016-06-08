@@ -1,3 +1,6 @@
+import ldap
+
+
 class BaseConfig(object):
     PROJECT = 'foo'
     SECRET_KEY = 'dev key'
@@ -9,3 +12,4 @@ class BaseConfig(object):
     LDAP_USERNAME = 'CN=user,OU=Users,DC=example,DC=org'
     LDAP_PASSWORD = 'password'
     LDAP_LOGIN_VIEW = 'core.login'
+    LDAP_CUSTOM_OPTIONS = {ldap.OPT_REFERRALS: 0}

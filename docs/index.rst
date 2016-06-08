@@ -96,6 +96,8 @@ directives:
                                    Default: '*'
 ``LDAP_GROUP_MEMBER_FILTER_FIELD`` The group member filter field to use when using OpenLDAP.
                                    Default: '*'
+``LDAP_CUSTOM_OPTIONS``            ``dict`` of ldap options you want to set in this format: {option: value}.
+                                   Default: ``None``
 ================================== ================================================================
 
 
@@ -113,6 +115,10 @@ History
 -------
 
 Changes:
+
+- 1.1.0 June 7, 2016
+
+  - Add the ability the pass any valid pyldap config options via the LDAP_CUSTOM_OPTIONS configuration directive.
 
 - 1.0.1 June 5, 2016
 

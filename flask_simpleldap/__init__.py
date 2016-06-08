@@ -59,7 +59,7 @@ class LDAP(object):
         app.config.setdefault('LDAP_OPENLDAP', False)
         app.config.setdefault('LDAP_GROUP_MEMBER_FILTER', '*')
         app.config.setdefault('LDAP_GROUP_MEMBER_FILTER_FIELD', '*')
-        app.config.setdefault('LDAP_CUSTOM_OPTIONS', {})
+        app.config.setdefault('LDAP_CUSTOM_OPTIONS', None)
 
         if app.config['LDAP_USE_SSL'] or app.config['LDAP_USE_TLS']:
             ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT,
@@ -77,9 +77,9 @@ class LDAP(object):
 
     @staticmethod
     def _set_custom_options(conn):
-        options = current_app.config['LDAP_OPTIONS']
+        options = current_app.config['LDAP_CUSTOM_OPTIONS']
         if options:
-            for k, v in options.values():
+            for k, v in options.items():
                 conn.set_option(k, v)
         return conn
 
