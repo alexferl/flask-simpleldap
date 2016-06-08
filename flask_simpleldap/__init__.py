@@ -59,6 +59,7 @@ class LDAP(object):
         app.config.setdefault('LDAP_OPENLDAP', False)
         app.config.setdefault('LDAP_GROUP_MEMBER_FILTER', '*')
         app.config.setdefault('LDAP_GROUP_MEMBER_FILTER_FIELD', '*')
+        app.config.setdefault('LDAP_CUSTOM_OPTIONS', None)
 
         if app.config['LDAP_USE_SSL'] or app.config['LDAP_USE_TLS']:
             ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT,
@@ -74,6 +75,14 @@ class LDAP(object):
             if app.config['LDAP_{0}'.format(option)] is None:
                 raise LDAPException('LDAP_{0} cannot be None!'.format(option))
 
+    @staticmethod
+    def _set_custom_options(conn):
+        options = current_app.config['LDAP_CUSTOM_OPTIONS']
+        if options:
+            for k, v in options.items():
+                conn.set_option(k, v)
+        return conn
+
     @property
     def initialize(self):
         """Initialize a connection to the LDAP server.
@@ -88,6 +97,7 @@ class LDAP(object):
                 current_app.config['LDAP_PORT']))
             conn.set_option(ldap.OPT_NETWORK_TIMEOUT,
                             current_app.config['LDAP_TIMEOUT'])
+            conn = self._set_custom_options(conn)
             conn.protocol_version = ldap.VERSION3
             if current_app.config['LDAP_USE_TLS']:
                 conn.start_tls_s()

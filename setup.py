@@ -9,7 +9,7 @@ from setuptools import setup
 
 setup(
     name='Flask-SimpleLDAP',
-    version='1.0.1',
+    version='1.1.0',
     url='https://github.com/admiralobvious/flask-simpleldap',
     license='MIT',
     author='Alexandre Ferland',
