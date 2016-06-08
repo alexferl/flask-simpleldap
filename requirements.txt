@@ -1,4 +1,2 @@
 Flask==0.11
 mock==2.0.0  # for ci
-pyldap==2.4.25.1
-
