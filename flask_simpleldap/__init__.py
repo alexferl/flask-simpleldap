@@ -5,6 +5,9 @@ import ldap
 from ldap import filter as ldap_filter
 from flask import abort, current_app, g, make_response, redirect, url_for, \
     request
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 __all__ = ['LDAP']
 
@@ -99,6 +102,8 @@ class LDAP(object):
                             current_app.config['LDAP_TIMEOUT'])
             conn = self._set_custom_options(conn)
             conn.protocol_version = ldap.VERSION3
+            conn.set_option(ldap.OPT_REFERRALS, 0)
+
             if current_app.config['LDAP_USE_TLS']:
                 conn.start_tls_s()
             return conn
