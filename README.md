@@ -24,10 +24,10 @@ from flask import Flask
 from flask_simpleldap import LDAP
 
 app = Flask(__name__)
-
 app.config['LDAP_BASE_DN'] = 'OU=users,dc=example,dc=org'
 app.config['LDAP_USERNAME'] = 'CN=user,OU=Users,DC=example,DC=org'
 app.config['LDAP_PASSWORD'] = 'password'
+
 ldap = LDAP(app)
 
 @app.route('/ldap')
@@ -57,7 +57,6 @@ from flask import Flask
 from flask_simpleldap import LDAP
 
 app = Flask(__name__)
-ldap = LDAP(app)
 
 # Base
 app.config['LDAP_REALM_NAME'] = 'OpenLDAP Authentication'
@@ -76,6 +75,8 @@ app.config['LDAP_GROUP_MEMBERS_FIELD'] = "uniquemember"
 app.config['LDAP_GROUP_OBJECT_FILTER'] = "(&(objectclass=groupOfUniqueNames)(uniquemember=%s))"
 app.config['LDAP_GROUP_MEMBER_FILTER'] = "(&(cn=*)(objectclass=groupOfUniqueNames)(uniquemember=%s))"
 app.config['LDAP_GROUP_MEMBER_FILTER_FIELD'] = "cn"
+
+ldap = LDAP(app)
 
 @app.route('/ldap')
 @ldap.login_required
