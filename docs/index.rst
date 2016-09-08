@@ -31,11 +31,11 @@ required configuration options:
     from flask_simpleldap import LDAP
 
     app = Flask(__name__)
-    ldap = LDAP(app)
-
     app.config['LDAP_BASE_DN'] = 'OU=users,dc=example,dc=org'
     app.config['LDAP_USERNAME'] = 'CN=user,OU=Users,DC=example,DC=org'
     app.config['LDAP_PASSWORD'] = 'password'
+
+    ldap = LDAP(app)
 
     @app.route('/ldap')
     @ldap.login_required
