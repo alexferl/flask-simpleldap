@@ -69,7 +69,7 @@ class LDAP(object):
             ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT,
                             ldap.OPT_X_TLS_DEMAND)
             ldap.set_option(ldap.OPT_X_TLS_CACERTFILE,
-                             current_app.config['LDAP_CERT_PATH'])
+                            current_app.config['LDAP_CERT_PATH'])
 
         for option in ['USERNAME', 'PASSWORD', 'BASE_DN']:
             if app.config['LDAP_{0}'.format(option)] is None:
