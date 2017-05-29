@@ -2,6 +2,7 @@
 import re
 from functools import wraps
 import ldap
+import sys
 from ldap import filter as ldap_filter
 from flask import abort, current_app, g, make_response, redirect, url_for, \
     request
@@ -149,7 +150,10 @@ class LDAP(object):
             return
         try:
             conn = self.initialize
-            conn.simple_bind_s(user_dn.decode('utf-8'), password)
+            if sys.version_info[0] > 2:
+                conn.simple_bind_s(user_dn, password)
+            else:
+                conn.simple_bind_s(user_dn.decode('utf-8'), password)
             return True
         except ldap.LDAPError:
             return
