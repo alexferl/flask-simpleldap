@@ -116,6 +116,11 @@ History
 
 Changes:
 
+- 1.1.2 July 17, 2017
+  - Merge GitHub PR `#30 <https://github.com/admiralobvious/flask-simpleldap/pull/30>`_,
+    Fix for python3
+  - Fix decoding bytes in PY3 for @ldap.group_required.
+
 - 1.1.1 April 10, 2017
   - Merge GitHub pull `#26 <https://github.com/admiralobvious/flask-simpleldap/pull/26>`_,
     Fix set_option call to LDAP for SSL CERT
