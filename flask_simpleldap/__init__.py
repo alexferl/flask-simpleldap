@@ -234,8 +234,12 @@ class LDAP(object):
                 if current_app.config['LDAP_OPENLDAP']:
                     group_member_filter = \
                         current_app.config['LDAP_GROUP_MEMBER_FILTER_FIELD']
-                    groups = [record[1][group_member_filter][0] for
-                              record in records]
+                    if sys.version_info[0] > 2:
+                        groups = [record[1][group_member_filter][0].decode(
+                            'utf-8') for record in records]
+                    else:
+                        groups = [record[1][group_member_filter][0] for
+                                  record in records]
                     return groups
                 else:
                     if current_app.config['LDAP_USER_GROUPS_FIELD'] in \
