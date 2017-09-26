@@ -116,6 +116,9 @@ History
 
 Changes:
 
+- 1.2.0 September 26, 2017
+  - Changed get_group_members() and get_user_groups() returning strings instead of bytes in PY3.
+
 - 1.1.2 July 17, 2017
   - Merge GitHub PR `#30 <https://github.com/admiralobvious/flask-simpleldap/pull/30>`_,
     Fix for python3

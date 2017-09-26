@@ -150,10 +150,7 @@ class LDAP(object):
             return
         try:
             conn = self.initialize
-            if sys.version_info[0] > 2:
-                conn.simple_bind_s(user_dn, password)
-            else:
-                conn.simple_bind_s(user_dn.decode('utf-8'), password)
+            conn.simple_bind_s(user_dn.decode('utf-8'), password)
             return True
         except ldap.LDAPError:
             return
@@ -248,6 +245,8 @@ class LDAP(object):
                             current_app.config['LDAP_USER_GROUPS_FIELD']]
                         result = [re.findall(b'(?:cn=|CN=)(.*?),', group)[0]
                                   for group in groups]
+                        if sys.version_info[0] > 2:
+                            result = [r.decode('utf-8') for r in result]
                         return result
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e.args))
@@ -272,6 +271,8 @@ class LDAP(object):
                         records[0][1]:
                     members = records[0][1][
                         current_app.config['LDAP_GROUP_MEMBERS_FIELD']]
+                    if sys.version_info[0] > 2:
+                        members = [m.decode('utf-8') for m in members]
                     return members
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e.args))
