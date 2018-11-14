@@ -11,7 +11,8 @@ install:
   - pip install -r dev_requirements.txt
 script: pytest tests
 env:
-  - FLASK=0.12.1
+  - FLASK=1.0.2
+  - FLASK=0.12.4
   - FLASK=0.11.1
   - FLASK=0.10.1
 install:
