@@ -72,7 +72,7 @@ app.config['LDAP_USER_OBJECT_FILTER'] = '(&(objectclass=inetOrgPerson)(uid=%s))'
 
 # Groups
 app.config['LDAP_GROUP_MEMBERS_FIELD'] = "uniquemember"
-app.config['LDAP_GROUP_OBJECT_FILTER'] = "(&(objectclass=groupOfUniqueNames)(uniquemember=%s))"
+app.config['LDAP_GROUP_OBJECT_FILTER'] = "(&(objectclass=groupOfUniqueNames)(cn=%s))"
 app.config['LDAP_GROUP_MEMBER_FILTER'] = "(&(cn=*)(objectclass=groupOfUniqueNames)(uniquemember=%s))"
 app.config['LDAP_GROUP_MEMBER_FILTER_FIELD'] = "cn"
 
