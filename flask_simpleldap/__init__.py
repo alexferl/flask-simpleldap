@@ -150,7 +150,9 @@ class LDAP(object):
             return
         try:
             conn = self.initialize
-            conn.simple_bind_s(user_dn.decode('utf-8'), password)
+            _user_dn = user_dn.decode('utf-8') \
+                if isinstance(user_dn, bytes) else user_dn
+            conn.simple_bind_s(_user_dn, password)
             return True
         except ldap.LDAPError:
             return
