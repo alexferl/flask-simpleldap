@@ -14,7 +14,7 @@ First, install Flask-SimpleLDAP:
     
 Flask-SimpleLDAP depends, and will install for you, recent versions of Flask
 (0.10.1 or later) and [pyldap](https://github.com/pyldap/pyldap). Flask-SimpleLDAP is compatible
-with and tested on Python 2.7, 3.4, 3.5 and 3.6.
+with and tested on Python 2.7, 3.5, 3.6 and 3.7.
 
 Next, add a ``LDAP`` instance to your code and at least the three
 required configuration options:
@@ -30,10 +30,16 @@ app.config['LDAP_PASSWORD'] = 'password'
 
 ldap = LDAP(app)
 
+
 @app.route('/ldap')
 @ldap.login_required
 def ldap_protected():
     return 'Success!'
+
+
+if __name__ == '__main__':
+    app.run()
+
 ```
 
 You can take a look at [examples/groups](examples/groups) for a more complete 
@@ -78,10 +84,16 @@ app.config['LDAP_GROUP_MEMBER_FILTER_FIELD'] = "cn"
 
 ldap = LDAP(app)
 
+
 @app.route('/ldap')
 @ldap.login_required
 def ldap_protected():
     return 'Success!'
+
+
+if __name__ == '__main__':
+    app.run()
+
 ```
 
 

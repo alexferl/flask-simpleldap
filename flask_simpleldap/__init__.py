@@ -75,9 +75,6 @@ class LDAP(object):
             if app.config['LDAP_{0}'.format(option)] is None:
                 raise LDAPException('LDAP_{0} cannot be None!'.format(option))
 
-        # Bind LDAP to app
-        app.ldap = self
-                
     @staticmethod
     def _set_custom_options(conn):
         options = current_app.config['LDAP_CUSTOM_OPTIONS']
@@ -175,13 +172,13 @@ class LDAP(object):
             if not dn_only:
                 fields = current_app.config['LDAP_USER_FIELDS']
             query_filter = query_filter or \
-                current_app.config['LDAP_USER_OBJECT_FILTER']
+                           current_app.config['LDAP_USER_OBJECT_FILTER']
             query = ldap_filter.filter_format(query_filter, (user,))
         elif group is not None:
             if not dn_only:
                 fields = current_app.config['LDAP_GROUP_FIELDS']
             query_filter = query_filter or \
-                current_app.config['LDAP_GROUP_OBJECT_FILTER']
+                           current_app.config['LDAP_GROUP_OBJECT_FILTER']
             query = ldap_filter.filter_format(query_filter, (group,))
         conn = self.bind
         try:
@@ -201,9 +198,9 @@ class LDAP(object):
                                 current_app.config['LDAP_OBJECTS_DN']]
                             return dn[0]
                 if type(records[0][1]) == 'dict':
-                	for k, v in list(records[0][1].items()):
-                    		result[k] = v
-                	return result
+                    for k, v in list(records[0][1].items()):
+                        result[k] = v
+                    return result
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e.args))
 
