@@ -304,7 +304,7 @@ class LDAP(object):
         def wrapped(*args, **kwargs):
             if g.user is None:
                 return redirect(url_for(current_app.config['LDAP_LOGIN_VIEW'],
-                                        next=request.path))
+                                        next=request.full_path or request.path))
             return func(*args, **kwargs)
 
         return wrapped
@@ -330,7 +330,7 @@ class LDAP(object):
                 if g.user is None:
                     return redirect(
                         url_for(current_app.config['LDAP_LOGIN_VIEW'],
-                                next=request.path))
+                                next=request.full_path or request.path))
                 match = [group for group in groups if group in g.ldap_groups]
                 if not match:
                     abort(401)
