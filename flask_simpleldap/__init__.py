@@ -34,7 +34,6 @@ class LDAP(object):
         :param flask.Flask app: the application to configure for use with
            this :class:`~LDAP`
         """
-
         app.config.setdefault('LDAP_HOST', 'localhost')
         app.config.setdefault('LDAP_PORT', 389)
         app.config.setdefault('LDAP_SCHEMA', 'ldap')
@@ -170,7 +169,6 @@ class LDAP(object):
         :param bool dn_only: If we should only retrieve the object's
             distinguished name or not. Default: ``False``.
         """
-
         query = None
         fields = None
         if user is not None:
@@ -189,7 +187,6 @@ class LDAP(object):
         try:
             records = conn.search_s(current_app.config['LDAP_BASE_DN'],
                                     ldap.SCOPE_SUBTREE, query, fields)
-
             conn.unbind_s()
             result = {}
             if records:
@@ -203,9 +200,10 @@ class LDAP(object):
                             dn = records[0][1][
                                 current_app.config['LDAP_OBJECTS_DN']]
                             return dn[0]
-                for k, v in list(records[0][1].items()):
-                    result[k] = v
-                return result
+                if type(records[0][1]) == 'dict':
+                	for k, v in list(records[0][1].items()):
+                    		result[k] = v
+                	return result
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e.args))
 
@@ -377,7 +375,6 @@ class LDAP(object):
             else:
                 req_username = request.authorization.username
                 req_password = request.authorization.password
-
             # Many LDAP servers will grant you anonymous access if you log in
             # with an empty password, even if you supply a non-anonymous user
             # ID, causing .bind_user() to return True. Therefore, only accept
