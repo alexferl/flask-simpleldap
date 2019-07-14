@@ -76,6 +76,9 @@ class LDAP(object):
             if app.config['LDAP_{0}'.format(option)] is None:
                 raise LDAPException('LDAP_{0} cannot be None!'.format(option))
 
+        # Bind LDAP to app
+        app.ldap = self
+                
     @staticmethod
     def _set_custom_options(conn):
         options = current_app.config['LDAP_CUSTOM_OPTIONS']
