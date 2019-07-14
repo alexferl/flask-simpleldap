@@ -157,11 +157,13 @@ class LDAP(object):
         except ldap.LDAPError:
             return
 
-    def get_object_details(self, user=None, group=None, dn_only=False):
+    def get_object_details(self, user=None, group=None, query_filter=None,
+                           dn_only=False):
         """Returns a ``dict`` with the object's (user or group) details.
 
         :param str user: Username of the user object you want details for.
         :param str group: Name of the group object you want details for.
+        :param str query_filter: If included, will be used to query object.
         :param bool dn_only: If we should only retrieve the object's
             distinguished name or not. Default: ``False``.
         """
@@ -171,13 +173,15 @@ class LDAP(object):
         if user is not None:
             if not dn_only:
                 fields = current_app.config['LDAP_USER_FIELDS']
-            query = ldap_filter.filter_format(
-                current_app.config['LDAP_USER_OBJECT_FILTER'], (user,))
+            query_filter = query_filter or \
+                current_app.config['LDAP_USER_OBJECT_FILTER']
+            query = ldap_filter.filter_format(query_filter, (user,))
         elif group is not None:
             if not dn_only:
                 fields = current_app.config['LDAP_GROUP_FIELDS']
-            query = ldap_filter.filter_format(
-                current_app.config['LDAP_GROUP_OBJECT_FILTER'], (group,))
+            query_filter = query_filter or \
+                current_app.config['LDAP_GROUP_OBJECT_FILTER']
+            query = ldap_filter.filter_format(query_filter, (group,))
         conn = self.bind
         try:
             records = conn.search_s(current_app.config['LDAP_BASE_DN'],
