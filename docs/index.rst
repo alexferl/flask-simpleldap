@@ -19,7 +19,7 @@ First, install Flask-SimpleLDAP:
     $ pip install flask-simpleldap
 
 Flask-SimpleLDAP depends, and will install for you, recent versions of Flask
-(0.10.1 or later) and pyldap. Flask-SimpleLDAP is compatible
+(0.12.4 or later) and pyldap. Flask-SimpleLDAP is compatible
 with and tested on Python 2.7, 3.5, 3.6 and 3.7.
 
 Next, add a :class:`~flask_simpleldap.LDAP` to your code and at least the three
@@ -120,6 +120,15 @@ History
 
 Changes:
 
+- 1.3.0 July 14, 2019
+  - Thanks to the contributors, this release fixes issues related to bind_user and fixes some issues related to filtering.
+    `#51 <https://github.com/admiralobvious/flask-simpleldap/pull/51>`_ Referral chasing crash
+    `#54 <https://github.com/admiralobvious/flask-simpleldap/pull/54>`_ Fixes #44 - Error in bind_user method, also fixes #60 and #61
+    `#56 <https://github.com/admiralobvious/flask-simpleldap/pull/56>`_ OpenLDAP section has Incorrect LDAP_GROUP_OBJECT_FILTER
+    `#57 <https://github.com/admiralobvious/flask-simpleldap/pull/57>`_ next vaule: Priority use request.full_path
+    `#59 <https://github.com/admiralobvious/flask-simpleldap/pull/59>`_ get_object_details to take query_filter and fallback to LDAP_USER_OBJECT_FILTER or LDAP_GROUP_OBJECT_FILTER
+
+
 - 1.2.0 September 26, 2017
   - Changed get_group_members() and get_user_groups() returning strings instead of bytes in PY3.
 
@@ -133,23 +142,18 @@ Changes:
     Fix set_option call to LDAP for SSL CERT
 
 - 1.1.0 June 7, 2016
-
   - Add the ability the pass any valid pyldap config options via the LDAP_CUSTOM_OPTIONS configuration directive.
 
 - 1.0.1 June 5, 2016
-
   - Fix ldap filter import.
 
 - 1.0.0 June 4, 2016
-
   - Python 3.x support. Switched from python-ldap to pyldap which is a fork with Python 3.x support.
 
 - 0.4.0: September 5, 2015
-
   - Added support for OpenLDAP directories. Thanks to `@jm66 <https://github.com/jm66>`_ on GitHub.
 
 - 0.3.0: January 21, 2015
-
   - Fix Github issue `#10 <https://github.com/admiralobvious/flask-simpleldap/issues/10>`_,
     Redirect users back to the page they originally requested after authenticating
 
@@ -157,17 +161,14 @@ Changes:
     Only trust .bind_user() with a non-empty password
 
 - 0.2.0: December 7, 2014
-
   - Added HTTP Basic Authentication. Thanks to `@OptiverTimAll <https://github.com/optivertimall>`_ on GitHub.
   - Fix GitHub issue `#4 <https://github.com/admiralobvious/flask-simpleldap/issues/4>`_,
     User or group queries are vulnerable to LDAP injection.
     Make sure you update your filters to use '%s' instead of the old '{}'!
 
 - 0.1.1: September 6, 2014
-
   - Fix GitHub issue `#3 <https://github.com/admiralobvious/flask-simpleldap/issues/3>`_,
     Not compatible with uppercase distinguished names.
 
 - 0.1: August 9, 2014
-
   - Initial Release
