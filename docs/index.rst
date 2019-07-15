@@ -41,6 +41,10 @@ required configuration options:
     @ldap.login_required
     def ldap_protected():
         return 'Success!'
+    
+    
+    if __name__ == '__main__':
+        app.run()
 
 
 Configuration
