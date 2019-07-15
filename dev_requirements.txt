@@ -1,4 +1,4 @@
-pyldap>=2.4.28  # here instead of requirements.txt so rtfd can build
+pyldap>=3.0.0  # here instead of requirements.txt so rtfd can build
 Sphinx>=1.5.5
 
 -r requirements.txt

@@ -22,7 +22,7 @@ setup(
     platforms='any',
     install_requires=[
         'Flask>=0.12.4',
-        'pyldap'
+        'python-ldap>=3.0.0'
     ],
     classifiers=[
         'Environment :: Web Environment',
