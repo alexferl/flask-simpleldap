@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 import re
 from functools import wraps
 import ldap
-import sys
 from ldap import filter as ldap_filter
 from flask import abort, current_app, g, make_response, redirect, url_for, \
     request
@@ -235,12 +233,8 @@ class LDAP(object):
                 if current_app.config['LDAP_OPENLDAP']:
                     group_member_filter = \
                         current_app.config['LDAP_GROUP_MEMBER_FILTER_FIELD']
-                    if sys.version_info[0] > 2:
-                        groups = [record[1][group_member_filter][0].decode(
-                            'utf-8') for record in records]
-                    else:
-                        groups = [record[1][group_member_filter][0] for
-                                  record in records]
+                    groups = [record[1][group_member_filter][0] for
+                              record in records]
                     return groups
                 else:
                     if current_app.config['LDAP_USER_GROUPS_FIELD'] in \
@@ -249,8 +243,6 @@ class LDAP(object):
                             current_app.config['LDAP_USER_GROUPS_FIELD']]
                         result = [re.findall(b'(?:cn=|CN=)(.*?),', group)[0]
                                   for group in groups]
-                        if sys.version_info[0] > 2:
-                            result = [r.decode('utf-8') for r in result]
                         return result
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e.args))
@@ -275,8 +267,6 @@ class LDAP(object):
                         records[0][1]:
                     members = records[0][1][
                         current_app.config['LDAP_GROUP_MEMBERS_FIELD']]
-                    if sys.version_info[0] > 2:
-                        members = [m.decode('utf-8') for m in members]
                     return members
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e.args))
