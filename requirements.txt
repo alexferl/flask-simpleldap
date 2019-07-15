@@ -1,2 +1,2 @@
-Flask>=0.12.4
-mock>=2.0.0  # for ci
+Flask==1.1.1
+mock==3.0.5  # for ci

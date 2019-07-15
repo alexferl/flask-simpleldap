@@ -1,4 +1,4 @@
-pyldap>=3.0.0  # here instead of requirements.txt so rtfd can build
-Sphinx>=1.5.5
+python-ldap==3.2.0  # here instead of requirements.txt so rtfd can build
+Sphinx==2.1.2
 
 -r requirements.txt
