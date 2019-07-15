@@ -9,7 +9,7 @@ from setuptools import setup
 
 setup(
     name='Flask-SimpleLDAP',
-    version='1.3.0',
+    version='1.3.1',
     url='https://github.com/admiralobvious/flask-simpleldap',
     license='MIT',
     author='Alexandre Ferland',
@@ -22,7 +22,7 @@ setup(
     platforms='any',
     install_requires=[
         'Flask>=0.12.4',
-        'python-ldap'
+        'pyldap'
     ],
     classifiers=[
         'Environment :: Web Environment',
@@ -30,7 +30,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
