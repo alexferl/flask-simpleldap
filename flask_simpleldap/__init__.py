@@ -195,10 +195,9 @@ class LDAP(object):
                             dn = records[0][1][
                                 current_app.config['LDAP_OBJECTS_DN']]
                             return dn[0]
-                if type(records[0][1]) == 'dict':
-                    for k, v in list(records[0][1].items()):
-                        result[k] = v
-                    return result
+                for k, v in list(records[0][1].items()):
+                    result[k] = v
+                return result
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e.args))
 
