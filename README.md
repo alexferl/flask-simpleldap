@@ -43,11 +43,18 @@ if __name__ == '__main__':
     app.run()
 ```
 
-You can take a look at [examples/groups](examples/groups) for a more complete 
-example using LDAP groups.
+When the user visits the protected URL, the browser will prompt for the
+login and password via the built-in HTTP authentication window. Note that
+with the default value of `LDAP_USER_OBJECT_FILTER` the login is expected
+to match the [`userPrincipalName` attribute](https://ldapwiki.com/wiki/UserPrincipalName)
+of the LDAP user, e.g. `me@mydomain.com`.
 
-You can also take a look at [examples/blueprints](examples/blueprints) for an 
-example using Flask's 
+Once you get the basic example working, check out the more complex ones:
+
+* [examples/groups](examples/groups) demostrates using:
+  * `@ldap.login_required` for form/cookie-based auth, instead of basic HTTP authentication.
+  * `@ldap.group_required()` to restrict access to pages based on the user's LDAP groups.
+* [examples/blueprints](examples/blueprints) implements the same functionality, but uses Flask's 
 [application factories](http://flask.pocoo.org/docs/patterns/appfactories/) 
 and [blueprints](http://flask.pocoo.org/docs/blueprints/).
 
