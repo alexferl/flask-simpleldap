@@ -18,30 +18,29 @@ Flask-SimpleLDAP depends, and will install for you, recent versions of Flask
 (0.12.4 or later) and [python-ldap](https://python-ldap.org/).
 Please consult the [python-ldap installation instructions](https://www.python-ldap.org/en/latest/installing.html) if you get an error during installation.
 
-Next, add a ``LDAP`` instance to your code and at least the three
-required configuration options:
+Next, add an ``LDAP`` instance to your code and at least the three
+required configuration options. The complete sample from
+[examples/basic_auth/app.py](examples/basic_auth/app.py) looks like this:
 
 ```python
-from flask import Flask
+from flask import Flask, g
 from flask_simpleldap import LDAP
 
 app = Flask(__name__)
+#app.config['LDAP_HOST'] = 'ldap.example.org'  # defaults to localhost
 app.config['LDAP_BASE_DN'] = 'OU=users,dc=example,dc=org'
 app.config['LDAP_USERNAME'] = 'CN=user,OU=Users,DC=example,DC=org'
 app.config['LDAP_PASSWORD'] = 'password'
 
 ldap = LDAP(app)
 
-
-@app.route('/ldap')
-@ldap.login_required
-def ldap_protected():
-    return 'Success!'
-
+@app.route('/')
+@ldap.basic_auth_required
+def index():
+    return 'Welcome, {0}!'.format(g.ldap_username)
 
 if __name__ == '__main__':
     app.run()
-
 ```
 
 You can take a look at [examples/groups](examples/groups) for a more complete 
@@ -61,7 +60,7 @@ configuration, add the following at least LDAP_USER_OBJECT_FILTER and
 LDAP_USER_OBJECT_FILTER.
 
 ```python
-from flask import Flask
+from flask import Flask, g
 from flask_simpleldap import LDAP
 
 app = Flask(__name__)
@@ -86,16 +85,13 @@ app.config['LDAP_GROUP_MEMBER_FILTER_FIELD'] = "cn"
 
 ldap = LDAP(app)
 
-
-@app.route('/ldap')
-@ldap.login_required
-def ldap_protected():
-    return 'Success!'
-
+@app.route('/')
+@ldap.basic_auth_required
+def index():
+    return 'Welcome, {0}!'.format(g.ldap_username)
 
 if __name__ == '__main__':
     app.run()
-
 ```
 
 Resources
