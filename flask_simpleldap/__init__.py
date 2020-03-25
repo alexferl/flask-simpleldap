@@ -232,8 +232,8 @@ class LDAP(object):
                 if current_app.config['LDAP_OPENLDAP']:
                     group_member_filter = \
                         current_app.config['LDAP_GROUP_MEMBER_FILTER_FIELD']
-                    groups = [record[1][group_member_filter][0] for
-                              record in records]
+                    groups = [record[1][group_member_filter][0].decode(
+                        'utf-8') for record in records]
                     return groups
                 else:
                     if current_app.config['LDAP_USER_GROUPS_FIELD'] in \
@@ -242,6 +242,7 @@ class LDAP(object):
                             current_app.config['LDAP_USER_GROUPS_FIELD']]
                         result = [re.findall(b'(?:cn=|CN=)(.*?),', group)[0]
                                   for group in groups]
+                        result = [r.decode('utf-8') for r in result]
                         return result
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e.args))
@@ -266,6 +267,7 @@ class LDAP(object):
                         records[0][1]:
                     members = records[0][1][
                         current_app.config['LDAP_GROUP_MEMBERS_FIELD']]
+                    members = [m.decode('utf-8') for m in members]
                     return members
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e.args))
