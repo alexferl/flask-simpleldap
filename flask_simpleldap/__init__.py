@@ -45,6 +45,8 @@ class LDAP(object):
         app.config.setdefault('LDAP_BASE_DN', None)
         app.config.setdefault('LDAP_OBJECTS_DN', 'distinguishedName')
         app.config.setdefault('LDAP_USER_FIELDS', [])
+        app.config.setdefault('LDAP_USERS_OBJECT_FILTER',
+                              'objectclass=Person')
         app.config.setdefault('LDAP_USER_OBJECT_FILTER',
                               '(&(objectclass=Person)(userPrincipalName=%s))')
         app.config.setdefault('LDAP_USER_GROUPS_FIELD', 'memberOf')
@@ -154,6 +156,43 @@ class LDAP(object):
             return True
         except ldap.LDAPError:
             return
+
+    def get_users(self, fields=None, dn_only=False):
+        """Returns a ``list`` with the users in base dn
+        or empty ``list`` if unsuccessful.
+
+        LDAP query setting is ``LDAP_USERS_OBJECT_FILTER``
+
+        :param fields: list of user fields to retrieve.
+         if ``None`` or empty, default user fields
+         ``LDAP_USER_FIELDS`` is used
+        :param bool dn_only: If we should only retrieve the object's
+            distinguished name or not. Default: ``False``.
+        :type fields: list
+        """
+        conn = self.bind
+        try:
+            fields = fields or current_app.config['LDAP_USER_FIELDS']
+            if current_app.config['LDAP_OPENLDAP']:
+                records = conn.search_s(
+                    current_app.config['LDAP_BASE_DN'], ldap.SCOPE_SUBTREE,
+                    current_app.config['LDAP_USERS_OBJECT_FILTER'],
+                    fields)
+            else:
+                records = conn.search_s(
+                    current_app.config['LDAP_BASE_DN'], ldap.SCOPE_SUBTREE,
+                    current_app.config['LDAP_USERS_OBJECT_FILTER'],
+                    fields)
+            conn.unbind_s()
+            if records:
+                if dn_only:
+                    return [r[0] for r in records]
+                else:
+                    return [r[1] for r in records]
+            else:
+                return []
+        except ldap.LDAPError as e:
+            raise LDAPException(self.error(e.args))
 
     def get_object_details(self, user=None, group=None, query_filter=None,
                            dn_only=False):
@@ -337,7 +376,7 @@ class LDAP(object):
         @wraps(func)
         def wrapped(*args, **kwargs):
             if g.user is None:
-                next_path=request.full_path or request.path
+                next_path = request.full_path or request.path
                 if next_path == '/?':
                     return redirect(
                         url_for(current_app.config['LDAP_LOGIN_VIEW']))
