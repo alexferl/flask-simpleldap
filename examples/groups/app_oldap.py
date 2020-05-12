@@ -15,9 +15,11 @@ app.config['LDAP_PASSWORD'] = 'password'
 app.config['LDAP_USER_OBJECT_FILTER'] = '(&(objectclass=inetOrgPerson)(uid=%s))'
 
 # Group configuration
-app.config['LDAP_GROUP_MEMBERS_FIELD'] = "uniquemember"
-app.config['LDAP_GROUP_OBJECT_FILTER'] = "(&(objectclass=groupOfUniqueNames)(uniquemember=%s))"
-app.config['LDAP_GROUP_MEMBER_FILTER'] = "(&(cn=*)(objectclass=groupOfUniqueNames)(uniquemember=%s))"
+app.config['LDAP_GROUP_MEMBERS_FIELD'] = 'uniquemember'
+app.config['LDAP_GROUP_OBJECT_FILTER'] = '(&(objectclass=groupOfUniqueNames)(cn=%s))'
+app.config['LDAP_GROUPS_OBJECT_FILTER'] = 'objectclass=groupOfUniqueNames'
+app.config['LDAP_GROUP_FIELDS'] = ['cn', 'entryDN', 'member', 'description']
+app.config['LDAP_GROUP_MEMBER_FILTER'] = '(&(cn=*)(objectclass=groupOfUniqueNames)(member=%s))'
 app.config['LDAP_GROUP_MEMBER_FILTER_FIELD'] = "cn"
 
 ldap = LDAP(app)
