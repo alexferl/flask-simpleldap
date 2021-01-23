@@ -184,7 +184,8 @@ class LDAP(object):
                                     ldap.SCOPE_SUBTREE, query, fields)
             conn.unbind_s()
             result = {}
-            if records:
+            if records and\
+               records[0][0] is not None and isinstance(records[0][1], dict):
                 if dn_only:
                     if current_app.config['LDAP_OPENLDAP']:
                         if records:
