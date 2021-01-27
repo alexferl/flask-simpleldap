@@ -170,13 +170,13 @@ class LDAP(object):
             if not dn_only:
                 fields = current_app.config['LDAP_USER_FIELDS']
             query_filter = query_filter or \
-                           current_app.config['LDAP_USER_OBJECT_FILTER']
+                current_app.config['LDAP_USER_OBJECT_FILTER']
             query = ldap_filter.filter_format(query_filter, (user,))
         elif group is not None:
             if not dn_only:
                 fields = current_app.config['LDAP_GROUP_FIELDS']
             query_filter = query_filter or \
-                           current_app.config['LDAP_GROUP_OBJECT_FILTER']
+                current_app.config['LDAP_GROUP_OBJECT_FILTER']
             query = ldap_filter.filter_format(query_filter, (group,))
         conn = self.bind
         try:
@@ -232,8 +232,11 @@ class LDAP(object):
                 if current_app.config['LDAP_OPENLDAP']:
                     group_member_filter = \
                         current_app.config['LDAP_GROUP_MEMBER_FILTER_FIELD']
-                    groups = [record[1][group_member_filter][0].decode(
-                        'utf-8') for record in records]
+                    record_list = [record[1] for record in records]
+                    record_dicts = [
+                        record for record in record_list if isinstance(record, dict)]
+                    groups = [item.get([group_member_filter][0])[0]
+                              for item in record_dicts]
                     return groups
                 else:
                     if current_app.config['LDAP_USER_GROUPS_FIELD'] in \
