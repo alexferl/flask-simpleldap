@@ -49,6 +49,7 @@ class LDAP(object):
                               '(&(objectclass=Person)(userPrincipalName=%s))')
         app.config.setdefault('LDAP_USER_GROUPS_FIELD', 'memberOf')
         app.config.setdefault('LDAP_GROUP_FIELDS', [])
+        app.config.setdefault('LDAP_GROUPS_OBJECT_FILTER', 'objectclass=Group')
         app.config.setdefault('LDAP_GROUP_OBJECT_FILTER',
                               '(&(objectclass=Group)(userPrincipalName=%s))')
         app.config.setdefault('LDAP_GROUP_MEMBERS_FIELD', 'member')
@@ -198,6 +199,42 @@ class LDAP(object):
                 for k, v in list(records[0][1].items()):
                     result[k] = v
                 return result
+        except ldap.LDAPError as e:
+            raise LDAPException(self.error(e.args))
+
+    def get_groups(self, fields=None, dn_only=False):
+        """Returns a ``list`` with the groups in base dn
+        or an empty``list`` if unsuccessful.
+
+        LDAP query setting is ``LDAP_GROUPS_OBJECT_FILTER``
+
+        :param fields: list of group fields to retrieve.
+         if ``None`` or empty, default group fields is used
+        :type fields: list
+        :param bool dn_only: If we should only retrieve the object's
+            distinguished name or not. Default: ``False``.
+        """
+        conn = self.bind
+        try:
+            fields = fields or current_app.config['LDAP_GROUP_FIELDS']
+            if current_app.config['LDAP_OPENLDAP']:
+                records = conn.search_s(
+                    current_app.config['LDAP_BASE_DN'], ldap.SCOPE_SUBTREE,
+                    current_app.config['LDAP_GROUPS_OBJECT_FILTER'],
+                    fields)
+            else:
+                records = conn.search_s(
+                    current_app.config['LDAP_BASE_DN'], ldap.SCOPE_SUBTREE,
+                    current_app.config['LDAP_GROUPS_OBJECT_FILTER'],
+                    fields)
+            conn.unbind_s()
+            if records:
+                if dn_only:
+                    return [r[0] for r in records]
+                else:
+                    return [r[1] for r in records]
+            else:
+                return []
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e.args))
 
