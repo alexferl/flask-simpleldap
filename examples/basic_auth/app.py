@@ -1,11 +1,8 @@
-from flask import Flask, g, request, session, redirect, url_for
+from flask import Flask, g
 from flask_simpleldap import LDAP
 
 app = Flask(__name__)
-app.secret_key = 'dev key'
-app.debug = True
-
-app.config['LDAP_HOST'] = 'ldap.example.org'
+#app.config['LDAP_HOST'] = 'ldap.example.org'  # defaults to localhost
 app.config['LDAP_BASE_DN'] = 'OU=users,dc=example,dc=org'
 app.config['LDAP_USERNAME'] = 'CN=user,OU=Users,DC=example,DC=org'
 app.config['LDAP_PASSWORD'] = 'password'
