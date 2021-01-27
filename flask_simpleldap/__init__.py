@@ -330,7 +330,7 @@ class LDAP(object):
                                 next=request.full_path or request.path))
                 match = [group for group in groups if group in g.ldap_groups]
                 if not match:
-                    abort(401)
+                    abort(403)
 
                 return func(*args, **kwargs)
 
