@@ -51,7 +51,7 @@ class LDAP(object):
         app.config.setdefault('LDAP_GROUP_FIELDS', [])
         app.config.setdefault('LDAP_GROUPS_OBJECT_FILTER', 'objectclass=Group')
         app.config.setdefault('LDAP_GROUP_OBJECT_FILTER',
-                              '(&(objectclass=Group)(userPrincipalName=%s))')
+                              '(&(objectclass=Group)(cn=%s))')
         app.config.setdefault('LDAP_GROUP_MEMBERS_FIELD', 'member')
         app.config.setdefault('LDAP_LOGIN_VIEW', 'login')
         app.config.setdefault('LDAP_REALM_NAME', 'LDAP authentication')
