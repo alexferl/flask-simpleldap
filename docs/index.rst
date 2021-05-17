@@ -78,6 +78,8 @@ directives:
                                    object details. Default: ``list`` (all).
 ``LDAP_USER_OBJECT_FILTER``        The filter to use when searching for a user object.
                                    Default: '(&(objectclass=Person)(userPrincipalName=%s))'
+``LDAP_USERS_OBJECT_FILTER``       The filter to use when searching for users objects.
+                                   Default: 'objectclass=Person'
 ``LDAP_USER_GROUPS_FIELD``         The field to return when searching for a user's
                                    groups. Default: 'memberOf'.
 ``LDAP_GROUPS_OBJECT_FILTER``      The filter to use when searching for groups objects.
