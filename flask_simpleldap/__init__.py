@@ -34,6 +34,7 @@ class LDAP(object):
         app.config.setdefault("LDAP_HOST", "localhost")
         app.config.setdefault("LDAP_PORT", 389)
         app.config.setdefault("LDAP_SCHEMA", "ldap")
+        app.config.setdefault("LDAP_SOCKET_PATH", "/")
         app.config.setdefault("LDAP_USERNAME", None)
         app.config.setdefault("LDAP_PASSWORD", None)
         app.config.setdefault("LDAP_TIMEOUT", 10)
@@ -68,9 +69,13 @@ class LDAP(object):
             ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_DEMAND)
             ldap.set_option(ldap.OPT_X_TLS_CACERTFILE, app.config["LDAP_CERT_PATH"])
 
-        for option in ["USERNAME", "PASSWORD", "BASE_DN"]:
-            if app.config["LDAP_{0}".format(option)] is None:
-                raise LDAPException("LDAP_{0} cannot be None!".format(option))
+        if app.config["LDAP_BASE_DN"] is None:
+            raise LDAPException("LDAP_BASE_DN cannot be None!")
+
+        if app.config["LDAP_SCHEMA"] != "ldapi":
+            for option in ["USERNAME", "PASSWORD"]:
+                if app.config["LDAP_{0}".format(option)] is None:
+                    raise LDAPException("LDAP_{0} cannot be None!".format(option))
 
     @staticmethod
     def _set_custom_options(conn):
@@ -88,13 +93,18 @@ class LDAP(object):
         """
 
         try:
-            conn = ldap.initialize(
-                "{0}://{1}:{2}".format(
+            if current_app.config["LDAP_SCHEMA"] == "ldapi":
+                uri = "{0}://{1}".format(
+                    current_app.config["LDAP_SCHEMA"],
+                    current_app.config["LDAP_SOCKET_PATH"],
+                )
+            else:
+                uri = "{0}://{1}:{2}".format(
                     current_app.config["LDAP_SCHEMA"],
                     current_app.config["LDAP_HOST"],
                     current_app.config["LDAP_PORT"],
                 )
-            )
+            conn = ldap.initialize(uri)
             conn.set_option(
                 ldap.OPT_NETWORK_TIMEOUT, current_app.config["LDAP_TIMEOUT"]
             )

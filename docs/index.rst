@@ -60,6 +60,8 @@ directives:
 ``LDAP_PORT``                      The port number of your LDAP server. Default: 389.
 ``LDAP_SCHEMA``                    The LDAP schema to use between 'ldap' and 'ldaps'.
                                    Default: 'ldap'.
+``LDAP_SOCKET_PATH``               If ``LDAP_SCHEMA`` is set to `ldapi`, the
+                                   path to the Unix socket path. Default: `/`.
 ``LDAP_USERNAME``                  **Required**: The user name used to bind.
 ``LDAP_PASSWORD``                  **Required**: The password used to bind.
 ``LDAP_TIMEOUT``                   How long (seconds) a connection can take to be opened
