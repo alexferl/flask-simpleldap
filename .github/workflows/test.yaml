@@ -58,6 +58,13 @@ jobs:
             python-version: '3.12'
             FLASK: 2.2.5
     steps:
+      - name: Install apt dependencies
+        run: |
+          set -ex
+          sudo apt update
+          sudo apt install -y ldap-utils slapd enchant-2 libldap2-dev libsasl2-dev apparmor-utils
+      - name: Disable AppArmor
+        run: sudo aa-disable /usr/sbin/slapd
       - name: 'Set up Python ${{ matrix.python-version }}'
         uses: actions/setup-python@v2
         with:

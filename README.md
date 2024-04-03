@@ -34,7 +34,7 @@ ldap = LDAP(app)
 @app.route("/")
 @ldap.basic_auth_required
 def index():
-    return "Welcome, {0}!".format(g.ldap_username)
+    return f"Welcome, {g.ldap_username}!"
 
 if __name__ == "__main__":
     app.run()
@@ -92,7 +92,7 @@ ldap = LDAP(app)
 @app.route("/")
 @ldap.basic_auth_required
 def index():
-    return "Welcome, {0}!".format(g.ldap_username)
+    return f"Welcome, {g.ldap_username}!"
 
 if __name__ == "__main__":
     app.run()
