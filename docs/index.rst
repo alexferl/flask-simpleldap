@@ -14,37 +14,38 @@ Quickstart
 
 First, install Flask-SimpleLDAP:
 
-.. code-block:: bash
+    .. code-block:: bash
 
-    $ pip install flask-simpleldap
+      pip install flask-simpleldap
 
 Flask-SimpleLDAP depends, and will install for you, recent versions of Flask
 (0.12.4 or later) and pyldap. Flask-SimpleLDAP is compatible
-with and tested on Python 3.5, 3.6 and 3.7.
+with and tested on Python 3.7+.
 
 Next, add a :class:`~flask_simpleldap.LDAP` to your code and at least the three
 required configuration options:
 
-.. code-block:: python
+    .. code-block:: python
 
-    from flask import Flask
-    from flask_simpleldap import LDAP
+      from flask import Flask
+      from flask_simpleldap import LDAP
 
-    app = Flask(__name__)
-    app.config['LDAP_BASE_DN'] = 'OU=users,dc=example,dc=org'
-    app.config['LDAP_USERNAME'] = 'CN=user,OU=Users,DC=example,DC=org'
-    app.config['LDAP_PASSWORD'] = 'password'
+      app = Flask(__name__)
+      # app.config["LDAP_HOST"] = "ldap.example.org"  # defaults to localhost
+      app.config["LDAP_BASE_DN"] = "OU=users,dc=example,dc=org"
+      app.config["LDAP_USERNAME"] = "CN=user,OU=Users,DC=example,DC=org"
+      app.config["LDAP_PASSWORD"] = "password"
 
-    ldap = LDAP(app)
+      ldap = LDAP(app)
 
-    @app.route('/ldap')
-    @ldap.login_required
-    def ldap_protected():
-        return 'Success!'
-    
-    
-    if __name__ == '__main__':
-        app.run()
+      @app.route("/ldap")
+      @ldap.login_required
+      def ldap_protected():
+          return "Success!"
+
+
+      if __name__ == "__main__":
+          app.run()
 
 
 Configuration
@@ -59,6 +60,8 @@ directives:
 ``LDAP_PORT``                      The port number of your LDAP server. Default: 389.
 ``LDAP_SCHEMA``                    The LDAP schema to use between 'ldap' and 'ldaps'.
                                    Default: 'ldap'.
+``LDAP_SOCKET_PATH``               If ``LDAP_SCHEMA`` is set to `ldapi`, the
+                                   path to the Unix socket path. Default: `/`.
 ``LDAP_USERNAME``                  **Required**: The user name used to bind.
 ``LDAP_PASSWORD``                  **Required**: The password used to bind.
 ``LDAP_TIMEOUT``                   How long (seconds) a connection can take to be opened
@@ -124,40 +127,62 @@ History
 
 Changes:
 
+- 1.4.0 July 16, 2019
+
+  - This release drops support for `Python 2.7 <https://pythonclock.org/>`_. If you're still on Python 2.7, you can use `v1.3.3 <https://github.com/alexferl/flask-simpleldap/releases/tag/v1.3.3>`_.
+
+  - Fixes:
+
+    - `#62 <https://github.com/admiralobvious/flask-simpleldap/issues/62>`_ get_object_details returning None
+
 - 1.3.0 July 14, 2019
+
   - Thanks to the contributors, this release fixes issues related to bind_user and fixes some issues related to filtering.
-    `#51 <https://github.com/admiralobvious/flask-simpleldap/pull/51>`_ Referral chasing crash
-    `#54 <https://github.com/admiralobvious/flask-simpleldap/pull/54>`_ Fixes #44 - Error in bind_user method, also fixes #60 and #61
-    `#56 <https://github.com/admiralobvious/flask-simpleldap/pull/56>`_ OpenLDAP section has Incorrect LDAP_GROUP_OBJECT_FILTER
-    `#57 <https://github.com/admiralobvious/flask-simpleldap/pull/57>`_ next vaule: Priority use request.full_path
-    `#59 <https://github.com/admiralobvious/flask-simpleldap/pull/59>`_ get_object_details to take query_filter and fallback to LDAP_USER_OBJECT_FILTER or LDAP_GROUP_OBJECT_FILTER
+
+    - `#51 <https://github.com/admiralobvious/flask-simpleldap/pull/51>`_ Referral chasing crash
+
+    - `#54 <https://github.com/admiralobvious/flask-simpleldap/pull/54>`_ Fixes #44 - Error in bind_user method, also fixes #60 and #61
+
+    - `#56 <https://github.com/admiralobvious/flask-simpleldap/pull/56>`_ OpenLDAP section has Incorrect LDAP_GROUP_OBJECT_FILTER
+
+    - `#57 <https://github.com/admiralobvious/flask-simpleldap/pull/57>`_ next vaule: Priority use request.full_path
+
+    - `#59 <https://github.com/admiralobvious/flask-simpleldap/pull/59>`_ get_object_details to take query_filter and fallback to LDAP_USER_OBJECT_FILTER or LDAP_GROUP_OBJECT_FILTER
 
 
 - 1.2.0 September 26, 2017
+
   - Changed get_group_members() and get_user_groups() returning strings instead of bytes in PY3.
 
 - 1.1.2 July 17, 2017
+
   - Merge GitHub PR `#30 <https://github.com/admiralobvious/flask-simpleldap/pull/30>`_,
     Fix for python3
   - Fix decoding bytes in PY3 for @ldap.group_required.
 
 - 1.1.1 April 10, 2017
+
   - Merge GitHub pull `#26 <https://github.com/admiralobvious/flask-simpleldap/pull/26>`_,
     Fix set_option call to LDAP for SSL CERT
 
 - 1.1.0 June 7, 2016
+
   - Add the ability the pass any valid pyldap config options via the LDAP_CUSTOM_OPTIONS configuration directive.
 
 - 1.0.1 June 5, 2016
+
   - Fix ldap filter import.
 
 - 1.0.0 June 4, 2016
+
   - Python 3.x support. Switched from python-ldap to pyldap which is a fork with Python 3.x support.
 
 - 0.4.0: September 5, 2015
+
   - Added support for OpenLDAP directories. Thanks to `@jm66 <https://github.com/jm66>`_ on GitHub.
 
 - 0.3.0: January 21, 2015
+
   - Fix Github issue `#10 <https://github.com/admiralobvious/flask-simpleldap/issues/10>`_,
     Redirect users back to the page they originally requested after authenticating
 
@@ -165,14 +190,17 @@ Changes:
     Only trust .bind_user() with a non-empty password
 
 - 0.2.0: December 7, 2014
+
   - Added HTTP Basic Authentication. Thanks to `@OptiverTimAll <https://github.com/optivertimall>`_ on GitHub.
   - Fix GitHub issue `#4 <https://github.com/admiralobvious/flask-simpleldap/issues/4>`_,
     User or group queries are vulnerable to LDAP injection.
     Make sure you update your filters to use '%s' instead of the old '{}'!
 
 - 0.1.1: September 6, 2014
+
   - Fix GitHub issue `#3 <https://github.com/admiralobvious/flask-simpleldap/issues/3>`_,
     Not compatible with uppercase distinguished names.
 
 - 0.1: August 9, 2014
+
   - Initial Release

@@ -1,16 +1,14 @@
 language: python
 sudo: required
-dist: bionic
+dist: focal
 python:
-  - "3.5"
-  - "3.6"
   - "3.7"
   - "3.8"
   - "3.9"
 env:
-  - FLASK=1.1.2
+  - FLASK=2.0.2
+  - FLASK=1.1.4
   - FLASK=1.0.4
-  - FLASK=0.12.5
 install:
   - pip install Flask==$FLASK
   - pip install -r dev_requirements.txt

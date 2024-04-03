@@ -5,10 +5,7 @@ from .extensions import ldap
 from .core import core
 from .foo import foo
 
-DEFAULT_BLUEPRINTS = (
-    core,
-    foo
-)
+DEFAULT_BLUEPRINTS = (core, foo)
 
 
 def create_app(config=None, app_name=None, blueprints=None):
@@ -33,11 +30,11 @@ def register_hooks(app):
     @app.before_request
     def before_request():
         g.user = None
-        if 'user_id' in session:
+        if "user_id" in session:
             # This is where you'd query your database to get the user info.
             g.user = {}
             # Create a global with the LDAP groups the user is a member of.
-            g.ldap_groups = ldap.get_user_groups(user=session['user_id'])
+            g.ldap_groups = ldap.get_user_groups(user=session["user_id"])
 
 
 def register_blueprints(app, blueprints):
