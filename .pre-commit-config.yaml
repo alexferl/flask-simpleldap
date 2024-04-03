@@ -1,15 +1,21 @@
 repos:
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.1.0
-  hooks:
-  - id: trailing-whitespace
-  - id: end-of-file-fixer
-  - id: mixed-line-ending
-    args: ['--fix=lf']
-    description: Forces to replace line ending by the UNIX 'lf' character.
-- repo: https://github.com/psf/black
-  rev: 22.1.0
-  hooks:
-  - id: black
-    language_version: python3
-    args: [-t, py310]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+        description: Forces to replace line ending by the UNIX 'lf' character.
+  - repo: https://github.com/psf/black
+    rev: 24.3.0
+    hooks:
+      - id: black
+        language_version: python3
+  - repo: https://github.com/d-ryzhykau/pipenv-lock-pre-commit
+    rev: 0.5.0
+    hooks:
+      - id: pipenv-lock
+      - id: pipenv-verify
+      - id: pipenv-requirements
+      - id: pipenv-requirements-dev
