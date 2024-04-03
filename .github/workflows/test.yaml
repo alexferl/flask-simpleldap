@@ -66,10 +66,10 @@ jobs:
       - name: Disable AppArmor
         run: sudo aa-disable /usr/sbin/slapd
       - name: 'Set up Python ${{ matrix.python-version }}'
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '${{ matrix.python-version }}'
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - run: pip install pytest Flask==$FLASK
         env:
           FLASK: '${{ matrix.FLASK }}'
