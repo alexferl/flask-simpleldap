@@ -421,7 +421,7 @@ class LDAP(object):
 
         def make_auth_required_response():
             response = make_response("Unauthorized", 401)
-            response.www_authenticate.set_basic(current_app.config["LDAP_REALM_NAME"])
+            response.headers['WWW-Authenticate'] = f'Basic realm="{current_app.config["LDAP_REALM_NAME"]}"'
             return response
 
         @wraps(func)
