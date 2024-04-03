@@ -46,14 +46,15 @@ class LDAP(object):
         app.config.setdefault("LDAP_OBJECTS_DN", "distinguishedName")
         app.config.setdefault("LDAP_USER_FIELDS", [])
         app.config.setdefault("LDAP_USER_GROUPS_FIELD", "memberOf")
-        app.config.setdefault("LDAP_USER_OBJECT_FILTER",
-                              "(&(objectclass=Person)(userPrincipalName=%s))")
-        app.config.setdefault("LDAP_USERS_OBJECT_FILTER",
-                              "objectclass=Person")
+        app.config.setdefault(
+            "LDAP_USER_OBJECT_FILTER", "(&(objectclass=Person)(userPrincipalName=%s))"
+        )
+        app.config.setdefault("LDAP_USERS_OBJECT_FILTER", "objectclass=Person")
         app.config.setdefault("LDAP_GROUP_FIELDS", [])
         app.config.setdefault("LDAP_GROUP_MEMBERS_FIELD", "member")
-        app.config.setdefault("LDAP_GROUP_OBJECT_FILTER",
-                              "(&(objectclass=Group)(userPrincipalName=%s))")
+        app.config.setdefault(
+            "LDAP_GROUP_OBJECT_FILTER", "(&(objectclass=Group)(userPrincipalName=%s))"
+        )
         app.config.setdefault("LDAP_GROUPS_OBJECT_FILTER", "objectclass=Group")
         app.config.setdefault("LDAP_LOGIN_VIEW", "login")
         app.config.setdefault("LDAP_REALM_NAME", "LDAP authentication")
@@ -63,22 +64,19 @@ class LDAP(object):
         app.config.setdefault("LDAP_CUSTOM_OPTIONS", None)
 
         if app.config["LDAP_USE_SSL"] or app.config["LDAP_USE_TLS"]:
-            ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT,
-                            ldap.OPT_X_TLS_NEVER)
+            ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
 
         if app.config["LDAP_REQUIRE_CERT"]:
-            ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT,
-                            ldap.OPT_X_TLS_DEMAND)
-            ldap.set_option(ldap.OPT_X_TLS_CACERTFILE,
-                            app.config["LDAP_CERT_PATH"])
+            ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_DEMAND)
+            ldap.set_option(ldap.OPT_X_TLS_CACERTFILE, app.config["LDAP_CERT_PATH"])
 
         if app.config["LDAP_BASE_DN"] is None:
             raise LDAPException("LDAP_BASE_DN cannot be None!")
 
         if app.config["LDAP_SCHEMA"] != "ldapi":
             for option in ["USERNAME", "PASSWORD"]:
-                if app.config["LDAP_{0}".format(option)] is None:
-                    raise LDAPException("LDAP_{0} cannot be None!".format(option))
+                if app.config[f"LDAP_{option}"] is None:
+                    raise LDAPException(f"LDAP_{option} cannot be None!")
 
     @staticmethod
     def _set_custom_options(conn):
@@ -97,16 +95,9 @@ class LDAP(object):
 
         try:
             if current_app.config["LDAP_SCHEMA"] == "ldapi":
-                uri = "{0}://{1}".format(
-                    current_app.config["LDAP_SCHEMA"],
-                    current_app.config["LDAP_SOCKET_PATH"],
-                )
+                uri = f"{current_app.config['LDAP_SCHEMA']}://{current_app.config['LDAP_SOCKET_PATH']}"
             else:
-                uri = "{0}://{1}:{2}".format(
-                    current_app.config["LDAP_SCHEMA"],
-                    current_app.config["LDAP_HOST"],
-                    current_app.config["LDAP_PORT"],
-                )
+                uri = f"{current_app.config['LDAP_SCHEMA']}://{current_app.config['LDAP_HOST']}:{current_app.config['LDAP_PORT']}"
             conn = ldap.initialize(uri)
             conn.set_option(
                 ldap.OPT_NETWORK_TIMEOUT, current_app.config["LDAP_TIMEOUT"]
@@ -189,14 +180,18 @@ class LDAP(object):
             fields = fields or current_app.config["LDAP_USER_FIELDS"]
             if current_app.config["LDAP_OPENLDAP"]:
                 records = conn.search_s(
-                    current_app.config["LDAP_BASE_DN"], ldap.SCOPE_SUBTREE,
+                    current_app.config["LDAP_BASE_DN"],
+                    ldap.SCOPE_SUBTREE,
                     current_app.config["LDAP_USERS_OBJECT_FILTER"],
-                    fields)
+                    fields,
+                )
             else:
                 records = conn.search_s(
-                    current_app.config["LDAP_BASE_DN"], ldap.SCOPE_SUBTREE,
+                    current_app.config["LDAP_BASE_DN"],
+                    ldap.SCOPE_SUBTREE,
                     current_app.config["LDAP_USERS_OBJECT_FILTER"],
-                    fields)
+                    fields,
+                )
             conn.unbind_s()
             if records:
                 if dn_only:
@@ -208,8 +203,9 @@ class LDAP(object):
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e.args))
 
-    def get_object_details(self, user=None, group=None, query_filter=None,
-                           dn_only=False):
+    def get_object_details(
+        self, user=None, group=None, query_filter=None, dn_only=False
+    ):
         """Returns a ``dict`` with the object's (user or group) details.
 
         :param str user: Username of the user object you want details for.
@@ -410,10 +406,10 @@ class LDAP(object):
             if g.user is None:
                 next_path = request.full_path or request.path
                 if next_path == "/?":
-                    return redirect(
-                        url_for(current_app.config["LDAP_LOGIN_VIEW"]))
-                return redirect(url_for(current_app.config["LDAP_LOGIN_VIEW"],
-                                        next=next_path))
+                    return redirect(url_for(current_app.config["LDAP_LOGIN_VIEW"]))
+                return redirect(
+                    url_for(current_app.config["LDAP_LOGIN_VIEW"], next=next_path)
+                )
             return func(*args, **kwargs)
 
         return wrapped
@@ -470,7 +466,9 @@ class LDAP(object):
 
         def make_auth_required_response():
             response = make_response("Unauthorized", 401)
-            response.headers['WWW-Authenticate'] = f'Basic realm="{current_app.config["LDAP_REALM_NAME"]}"'
+            response.headers["WWW-Authenticate"] = (
+                f'Basic realm="{current_app.config["LDAP_REALM_NAME"]}"'
+            )
             return response
 
         @wraps(func)

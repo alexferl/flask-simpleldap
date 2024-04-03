@@ -1,0 +1,71 @@
+name: Test
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: '${{ matrix.os }}'
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python-version: '3.8'
+            FLASK: 3.0.2
+          - os: ubuntu-latest
+            python-version: '3.8'
+            FLASK: 2.3.3
+          - os: ubuntu-latest
+            python-version: '3.8'
+            FLASK: 2.2.5
+          - os: ubuntu-latest
+            python-version: '3.9'
+            FLASK: 3.0.2
+          - os: ubuntu-latest
+            python-version: '3.9'
+            FLASK: 2.3.3
+          - os: ubuntu-latest
+            python-version: '3.9'
+            FLASK: 2.2.5
+          - os: ubuntu-latest
+            python-version: '3.10'
+            FLASK: 3.0.2
+          - os: ubuntu-latest
+            python-version: '3.10'
+            FLASK: 2.3.3
+          - os: ubuntu-latest
+            python-version: '3.10'
+            FLASK: 2.2.5
+          - os: ubuntu-latest
+            python-version: '3.11'
+            FLASK: 3.0.2
+          - os: ubuntu-latest
+            python-version: '3.11'
+            FLASK: 2.3.3
+          - os: ubuntu-latest
+            python-version: '3.11'
+            FLASK: 2.2.5
+          - os: ubuntu-latest
+            python-version: '3.12'
+            FLASK: 3.0.2
+          - os: ubuntu-latest
+            python-version: '3.12'
+            FLASK: 2.3.3
+          - os: ubuntu-latest
+            python-version: '3.12'
+            FLASK: 2.2.5
+    steps:
+      - name: 'Set up Python ${{ matrix.python-version }}'
+        uses: actions/setup-python@v2
+        with:
+          python-version: '${{ matrix.python-version }}'
+      - uses: actions/checkout@v2
+      - run: pip install pytest Flask==$FLASK
+        env:
+          FLASK: '${{ matrix.FLASK }}'
+      - run: pip install -r requirements-dev.txt .
+      - run: pip install .
+      - run: pytest

@@ -1,6 +1,0 @@
-black==24.3.0
-pre-commit==2.17.0
-python-ldap==3.4.0  # here instead of requirements.txt so rtfd can build
-Sphinx==2.1.2
-
--r requirements.txt

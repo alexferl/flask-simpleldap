@@ -1,13 +1,9 @@
-Flask-SimpleLDAP [![Build Status](https://app.travis-ci.com/alexferl/flask-simpleldap.svg?branch=master)](https://app.travis-ci.com/alexferl/flask-simpleldap)
-================
-
+# Flask-SimpleLDAP
 Flask-SimpleLDAP provides LDAP authentication for Flask.
 
-Flask-SimpleLDAP is compatible with and tested on Python 3.7+.
+Flask-SimpleLDAP is compatible with and tested on Python 3.8+.
 
-Quickstart
-----------
-
+## Quickstart
 First, install Flask-SimpleLDAP:
 
 ```shell
@@ -16,10 +12,10 @@ pip install flask-simpleldap
 
 
 Flask-SimpleLDAP depends, and will install for you, recent versions of Flask
-(0.12.4 or later) and [python-ldap](https://python-ldap.org/).
+(2.2.5 or later) and [python-ldap](https://python-ldap.org/).
 Please consult the [python-ldap installation instructions](https://www.python-ldap.org/en/latest/installing.html) if you get an error during installation.
 
-Next, add an ``LDAP`` instance to your code and at least the three
+Next, add an `LDAP` instance to your code and at least the three
 required configuration options. The complete sample from
 [examples/basic_auth/app.py](examples/basic_auth/app.py) looks like this:
 
@@ -52,18 +48,18 @@ of the LDAP user, e.g. `me@mydomain.com`.
 
 Once you get the basic example working, check out the more complex ones:
 
-* [examples/groups](examples/groups) demostrates using:
-  * `@ldap.login_required` for form/cookie-based auth, instead of basic HTTP authentication.
-  * `@ldap.group_required()` to restrict access to pages based on the user's LDAP groups.
-* [examples/blueprints](examples/blueprints) implements the same functionality, but uses Flask's
-[application factories](http://flask.pocoo.org/docs/patterns/appfactories/)
-and [blueprints](http://flask.pocoo.org/docs/blueprints/).
+- [examples/groups](examples/groups) demonstrates using:
+  - `@ldap.login_required` for form/cookie-based auth, instead of basic HTTP authentication.
+  - `@ldap.group_required()` to restrict access to pages based on the user's LDAP groups.
+- [examples/blueprints](examples/blueprints) implements the same functionality, but uses Flask's
+[application factories](https://flask.palletsprojects.com/en/3.0.x/patterns/appfactories/)
+and [blueprints](https://flask.palletsprojects.com/en/3.0.x/blueprints/).
 
 
 OpenLDAP
 --------
 
-Add the ``LDAP`` instance to your code and depending on your OpenLDAP
+Add the `LDAP` instance to your code and depending on your OpenLDAP
 configuration, add the following at least LDAP_USER_OBJECT_FILTER and
 LDAP_USER_OBJECT_FILTER.
 
@@ -102,8 +98,6 @@ if __name__ == "__main__":
     app.run()
 ```
 
-Resources
----------
+## Resources
 
-- [Documentation](http://flask-simpleldap.readthedocs.org/en/latest/)
 - [PyPI](https://pypi.python.org/pypi/Flask-SimpleLDAP)
