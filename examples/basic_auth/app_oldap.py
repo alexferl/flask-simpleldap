@@ -14,6 +14,7 @@ app.config["LDAP_PASSWORD"] = "password"
 app.config["LDAP_OPENLDAP"] = True
 app.config["LDAP_OBJECTS_DN"] = "dn"
 app.config["LDAP_USER_OBJECT_FILTER"] = "(&(objectclass=inetOrgPerson)(uid=%s))"
+app.config["LDAP_USERS_OBJECT_FILTER"] = "objectclass=inetOrgPerson"
 
 # Groups configuration
 app.config["LDAP_GROUP_MEMBERS_FIELD"] = "uniquemember"
