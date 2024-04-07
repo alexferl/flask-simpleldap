@@ -40,7 +40,7 @@ if __name__ == "__main__":
 When the user visits the protected URL, the browser will prompt for the
 login and password via the built-in HTTP authentication window. Note that
 with the default value of `LDAP_USER_OBJECT_FILTER` the login is expected
-to match the [`userPrincipalName` attribute](https://ldapwiki.com/wiki/UserPrincipalName)
+to match the [`userPrincipalName` attribute](https://ldapwiki.com/wiki/Wiki.jsp?page=UserPrincipalName)
 of the LDAP user, e.g. `me@mydomain.com`.
 
 Once you get the basic example working, check out the more complex ones:
