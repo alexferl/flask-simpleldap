@@ -1,4 +1,5 @@
 from flask import Blueprint
+
 from ..extensions import ldap
 
 foo = Blueprint("foo", __name__, url_prefix="/foo")
