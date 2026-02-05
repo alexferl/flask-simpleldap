@@ -128,7 +128,7 @@ class LDAP(object):
         except ldap.LDAPError as e:
             raise LDAPException(self.error(e.args))
 
-    def bind_user(self, username, password):
+    def bind_user(self, username, password, raise_on_exception=False):
         """Attempts to bind a user to the LDAP server using the credentials
         supplied.
 
@@ -144,6 +144,10 @@ class LDAP(object):
         :param str username: The username to attempt to bind with.
         :param str password: The password of the username we're attempting to
             bind with.
+        :param bool raise_on_exception: If ``True``, raises the underlying
+            ldap.LDAPError exception instead of returning ``None`` on failure.
+            This allows callers to inspect vendor-specific error details.
+            Default: ``False``.
         :return: Returns ``True`` if successful or ``None`` if the credentials
             are invalid.
         """
@@ -160,6 +164,8 @@ class LDAP(object):
             conn.simple_bind_s(_user_dn, password)
             return True
         except ldap.LDAPError:
+            if raise_on_exception:
+                raise
             return
 
     def get_users(self, fields=None, dn_only=False):
