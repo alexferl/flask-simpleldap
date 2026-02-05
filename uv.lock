@@ -192,7 +192,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "flask", specifier = ">=2.2.5" },
+    { name = "flask", specifier = ">=2.3.3" },
     { name = "python-ldap", specifier = ">=3.0.0" },
 ]
 
