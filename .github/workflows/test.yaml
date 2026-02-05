@@ -64,7 +64,10 @@ jobs:
           sudo apt update
           sudo apt install -y ldap-utils slapd enchant-2 libldap2-dev libsasl2-dev apparmor-utils
       - name: Disable AppArmor
-        run: sudo aa-disable /usr/sbin/slapd
+        run: |
+          sudo systemctl stop apparmor || true
+          sudo find /etc/apparmor.d -name "slapd*" -exec rm {} \; || true
+          sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.slapd 2>/dev/null || true
       - name: 'Set up Python ${{ matrix.python-version }}'
         uses: actions/setup-python@v6
         with:
