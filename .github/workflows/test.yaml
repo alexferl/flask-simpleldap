@@ -73,8 +73,8 @@ jobs:
         uses: astral-sh/setup-uv@v7
         with:
           python-version: '${{ matrix.python-version }}'
+      - run: uv sync --all-extras --dev
       - run: uv pip install Flask==$FLASK
         env:
           FLASK: '${{ matrix.FLASK }}'
-      - run: uv sync --all-extras --dev
       - run: uv run python -m unittest
