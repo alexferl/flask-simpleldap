@@ -1,21 +1,42 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v6.0.0
     hooks:
-      - id: trailing-whitespace
+      - id: check-ast
+      - id: check-builtin-literals
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-shebang-scripts-are-executable
+      - id: check-toml
+      - id: check-yaml
+        args: ["--allow-multiple-documents"]
+      - id: debug-statements
       - id: end-of-file-fixer
+      - id: fix-byte-order-marker
       - id: mixed-line-ending
-        args: ['--fix=lf']
-        description: Forces to replace line ending by the UNIX 'lf' character.
-  - repo: https://github.com/psf/black
-    rev: 24.3.0
+        args: ["--fix=lf"]
+      - id: pretty-format-json
+        args: ["--autofix", "--indent=2", "--no-sort-keys"]
+        files: \.json$
+      - id: trailing-whitespace
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.14
     hooks:
-      - id: black
-        language_version: python3
-  - repo: https://github.com/d-ryzhykau/pipenv-lock-pre-commit
-    rev: 0.5.0
+      - id: ruff
+        args: ["--fix", "--exit-non-zero-on-fix"]
+      - id: ruff-format
+
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.9.30
     hooks:
-      - id: pipenv-lock
-      - id: pipenv-verify
-      - id: pipenv-requirements
-      - id: pipenv-requirements-dev
+      - id: uv-lock
+      - id: uv-export
+        args: ["-o", "requirements.txt", "--no-hashes", "-q"]
+
+  - repo: https://github.com/tox-dev/pyproject-fmt
+    rev: v2.12.1
+    hooks:
+      - id: pyproject-fmt

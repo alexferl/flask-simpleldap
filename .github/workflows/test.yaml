@@ -13,50 +13,50 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            python-version: '3.8'
-            FLASK: 3.0.2
-          - os: ubuntu-latest
-            python-version: '3.8'
-            FLASK: 2.3.3
-          - os: ubuntu-latest
-            python-version: '3.8'
-            FLASK: 2.2.5
-          - os: ubuntu-latest
-            python-version: '3.9'
-            FLASK: 3.0.2
-          - os: ubuntu-latest
-            python-version: '3.9'
-            FLASK: 2.3.3
-          - os: ubuntu-latest
-            python-version: '3.9'
-            FLASK: 2.2.5
+            python-version: '3.10'
+            FLASK: 3.1.2
           - os: ubuntu-latest
             python-version: '3.10'
-            FLASK: 3.0.2
+            FLASK: 3.0.3
           - os: ubuntu-latest
             python-version: '3.10'
             FLASK: 2.3.3
           - os: ubuntu-latest
-            python-version: '3.10'
-            FLASK: 2.2.5
+            python-version: '3.11'
+            FLASK: 3.1.2
           - os: ubuntu-latest
             python-version: '3.11'
-            FLASK: 3.0.2
+            FLASK: 3.0.3
           - os: ubuntu-latest
             python-version: '3.11'
             FLASK: 2.3.3
           - os: ubuntu-latest
-            python-version: '3.11'
-            FLASK: 2.2.5
+            python-version: '3.12'
+            FLASK: 3.1.2
           - os: ubuntu-latest
             python-version: '3.12'
-            FLASK: 3.0.2
+            FLASK: 3.0.3
           - os: ubuntu-latest
             python-version: '3.12'
             FLASK: 2.3.3
           - os: ubuntu-latest
-            python-version: '3.12'
-            FLASK: 2.2.5
+            python-version: '3.13'
+            FLASK: 3.1.2
+          - os: ubuntu-latest
+            python-version: '3.13'
+            FLASK: 3.0.3
+          - os: ubuntu-latest
+            python-version: '3.13'
+            FLASK: 2.3.3
+          - os: ubuntu-latest
+            python-version: '3.14'
+            FLASK: 3.1.2
+          - os: ubuntu-latest
+            python-version: '3.14'
+            FLASK: 3.0.3
+          - os: ubuntu-latest
+            python-version: '3.14'
+            FLASK: 2.3.3
     steps:
       - name: Install apt dependencies
         run: |
@@ -64,15 +64,17 @@ jobs:
           sudo apt update
           sudo apt install -y ldap-utils slapd enchant-2 libldap2-dev libsasl2-dev apparmor-utils
       - name: Disable AppArmor
-        run: sudo aa-disable /usr/sbin/slapd
-      - name: 'Set up Python ${{ matrix.python-version }}'
-        uses: actions/setup-python@v5
+        run: |
+          sudo systemctl stop apparmor || true
+          sudo find /etc/apparmor.d -name "slapd*" -exec rm {} \; || true
+          sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.slapd 2>/dev/null || true
+      - uses: actions/checkout@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: '${{ matrix.python-version }}'
-      - uses: actions/checkout@v4
-      - run: pip install pytest Flask==$FLASK
+      - run: uv sync --all-extras --dev
+      - run: uv pip install Flask==$FLASK
         env:
           FLASK: '${{ matrix.FLASK }}'
-      - run: pip install -r requirements-dev.txt .
-      - run: pip install .
-      - run: pytest
+      - run: uv run python -m unittest

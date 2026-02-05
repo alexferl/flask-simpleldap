@@ -1,8 +1,8 @@
 from flask import Flask, g, session
 
 from .config import BaseConfig
-from .extensions import ldap
 from .core import core
+from .extensions import ldap
 from .foo import foo
 
 DEFAULT_BLUEPRINTS = (core, foo)

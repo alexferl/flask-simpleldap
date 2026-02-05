@@ -1,5 +1,6 @@
 import ldap as l
-from flask import Flask, g, request, session, redirect, url_for
+from flask import Flask, g, redirect, request, session, url_for
+
 from flask_simpleldap import LDAP
 
 app = Flask(__name__)

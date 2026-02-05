@@ -1,4 +1,5 @@
-from flask import Flask, g, request, session, redirect, url_for
+from flask import Flask, g, redirect, request, session, url_for
+
 from flask_simpleldap import LDAP
 
 app = Flask(__name__)
@@ -19,9 +20,7 @@ app.config["LDAP_GROUP_MEMBERS_FIELD"] = "uniquemember"
 app.config["LDAP_GROUP_OBJECT_FILTER"] = "(&(objectclass=groupOfUniqueNames)(cn=%s))"
 app.config["LDAP_GROUPS_OBJECT_FILTER"] = "objectclass=groupOfUniqueNames"
 app.config["LDAP_GROUP_FIELDS"] = ["cn", "entryDN", "member", "description"]
-app.config["LDAP_GROUP_MEMBER_FILTER"] = (
-    "(&(cn=*)(objectclass=groupOfUniqueNames)(member=%s))"
-)
+app.config["LDAP_GROUP_MEMBER_FILTER"] = "(&(cn=*)(objectclass=groupOfUniqueNames)(member=%s))"
 app.config["LDAP_GROUP_MEMBER_FILTER_FIELD"] = "cn"
 
 ldap = LDAP(app)

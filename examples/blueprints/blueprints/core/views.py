@@ -1,4 +1,5 @@
-from flask import Blueprint, g, request, session, redirect, url_for
+from flask import Blueprint, g, redirect, request, session, url_for
+
 from ..extensions import ldap
 
 core = Blueprint("core", __name__)

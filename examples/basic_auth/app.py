@@ -1,4 +1,5 @@
 from flask import Flask, g
+
 from flask_simpleldap import LDAP
 
 app = Flask(__name__)
