@@ -47,5 +47,5 @@ typing-extensions==4.15.0 ; python_full_version < '3.11'
     # via virtualenv
 virtualenv==20.36.1
     # via pre-commit
-werkzeug==3.1.5
+werkzeug==3.1.6
     # via flask
