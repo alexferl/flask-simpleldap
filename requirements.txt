@@ -32,7 +32,7 @@ nodeenv==1.10.0
 platformdirs==4.5.1
     # via virtualenv
 pre-commit==4.5.1
-pyasn1==0.6.3
+pyasn1==0.6.4
     # via
     #   pyasn1-modules
     #   python-ldap
